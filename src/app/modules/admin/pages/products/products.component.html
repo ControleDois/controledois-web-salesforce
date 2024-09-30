@@ -1,0 +1,26 @@
+<app-fixed-header  [fixedHeader]="fixedHeader"></app-fixed-header>
+
+<div class="app-container">
+  <ul class="app-list">
+    <li *ngFor="let product of products">
+      <div class="title">
+        <h3>{{ product?.shop?.name }}</h3>
+        <p>{{ product?.shop?.description || 'Sem descrição' }}</p>
+      </div>
+
+      <div class="description-values">
+        <span *ngIf="getAmount(product) === 0">{{ product?.shop?.active_minimum_sales_quantity ? 'Venda por quantidade: ' : ''}}
+          <b>{{product?.shop?.active_minimum_sales_quantity ? product?.shop?.minimum_sales_quantity : ''}}</b>
+        </span>
+        <span>Valor: <b>{{ product?.shop?.sale_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+        <span *ngIf="getAmount(product) > 0">Valor total: <b>{{getAmount(product) * product?.shop?.sale_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+      </div>
+
+      <div class="insert-remove-item">
+        <button class="remove-button" mat-icon-button (click)="removeProduct(product)"><mat-icon>remove</mat-icon></button>
+        <input class="transparent-input t-al-center" [value]="getAmount(product)" (change)="changeAmount(product, $event)" type="number"/>
+        <button class="insert-button" mat-icon-button (click)="addProduct(product)"><mat-icon>add</mat-icon></button>
+      </div>
+    </li>
+  </ul>
+</div>

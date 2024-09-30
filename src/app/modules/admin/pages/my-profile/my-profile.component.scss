@@ -1,0 +1,20 @@
+.details {
+  margin: 10px 0;
+
+  .details-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .details-item-title {
+      display: flex;
+      text-align: center;
+      align-items: center;
+      color: #b4b4b4;
+
+      mat-icon {
+        margin-right: 5px;
+      }
+    }
+  }
+}

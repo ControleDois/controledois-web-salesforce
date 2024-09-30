@@ -1,0 +1,52 @@
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 10px 5px;
+  background: var(--color-primary);
+  color: #fff;
+  z-index: 100;
+  max-height: 60px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .title-back {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    h2 {
+      font-size: 1.3em;
+      margin-left: 10px;
+    }
+  }
+
+
+  .search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    input {
+      width: 100%;
+      padding: 5px;
+      border-radius: 5px;
+      border: none;
+      background: transparent;
+      color: #fff;
+      font-size: 1em;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border: none;
+    }
+
+    input::placeholder {
+      color: #ddd;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<div class="slide-container">
+  <div class="slider">
+    <div class="slide featured-title" *ngFor="let slide of slides; let i = index" [class.active]="i === currentSlideIndex">
+      <img class="large-img" [src]="slide.image" alt="Slide Image" />
+      <h2>{{ slide.title }}</h2>
+      <p>{{ slide.description }}</p>
+    </div>
+  </div>
+
+  <div class="indicators">
+    <span *ngFor="let slide of slides; let i = index" (click)="setSlide(i)" [class.active]="i === currentSlideIndex"></span>
+  </div>
+
+  <button mat-button class="button-blue-border-white fixed-button" routerLink="../signin">Entrar</button>
+</div>

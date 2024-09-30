@@ -1,0 +1,129 @@
+.order-totais {
+  width: 100%;
+  margin: 0px;
+  display: flex;
+  padding: 15px;
+  list-style: none;
+  border-bottom: 1px solid rgba(149, 149, 149, 0.4);
+  border-top: 1px solid rgba(149, 149, 149, 0.4);
+  flex-direction: column;
+
+  li {
+    display: flex;
+    font-size: 0.875rem;
+    align-items: center;
+    font-weight: 300;
+    margin-bottom: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+
+  .order-totais-total {
+    span {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  }
+}
+
+.discont {
+  display: flex;
+  justify-content: flex-end;
+
+  input {
+    border: 1px solid #e6e6e6;
+    height: 37px;
+    padding: 0px 15px;
+    border-radius: 0.5rem;
+    width: 30%;
+  }
+}
+
+.payment-discont {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 10px;
+
+  button:first-child {
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
+
+  button:last-child {
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .active-discont {
+    color: #fff;
+    background: var(--color-primary) none repeat scroll 0% 0%;
+  }
+
+  button {
+    border: 1px solid #e6e6e6;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 9px;
+    width: 40px;
+    text-align: center;
+    height: auto;
+    margin-top: 0;
+    background-color: #fff;
+    color: #000;
+  }
+}
+
+.selection-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-direction: row;
+
+  .title-text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.remove-selected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #db4a6e;
+  cursor: pointer;
+  padding-bottom: 10px;
+}
+
+.product-obs {
+  width: 100%;
+  display: flex;
+  padding: 15px 0;
+  flex-direction: column;
+
+  .product-obs-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-direction: row;
+
+    .product-obs-title-text {
+      flex: 1;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  textarea {
+    width: 100%;
+    border: 1px solid rgba(149, 149, 149, 0.4);
+    height: 90px;
+    resize: none;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 400;
+    border-radius: 6px;
+  }
+}
+
+

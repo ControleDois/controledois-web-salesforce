@@ -1,0 +1,90 @@
+<app-fixed-header  [fixedHeader]="fixedHeader"></app-fixed-header>
+
+<div class="app-container">
+  <ul class="app-list">
+    <li *ngFor="let product of ShoppingCart?.products">
+      <div class="title">
+        <h3>{{ product?.shop?.name }}</h3>
+      </div>
+
+      <div class="description-values">
+        <span *ngIf="getAmount(product) === 0">{{ product?.shop?.active_minimum_sales_quantity ? 'Venda por quantidade: ' : ''}}
+          <b>{{product?.shop?.active_minimum_sales_quantity ? product?.shop?.minimum_sales_quantity : ''}}</b>
+        </span>
+        <span>Valor: <b>{{ product?.shop?.sale_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+        <span *ngIf="getAmount(product) > 0">Valor total: <b>{{getAmount(product) * (product?.shop?.sale_value || 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+      </div>
+
+      <div class="insert-remove-item">
+        <button class="remove-button" mat-icon-button (click)="removeProduct(product)"><mat-icon>remove</mat-icon></button>
+        <input class="transparent-input t-al-center"[value]="getAmount(product)" (change)="changeAmount(product, $event)" type="number"/>
+        <button class="insert-button" mat-icon-button (click)="addProduct(product)"><mat-icon>add</mat-icon></button>
+      </div>
+    </li>
+  </ul>
+
+  <div class="search-and-select">
+    <button mat-button class="button-blue-border-white" routerLink="../products"><mat-icon>add</mat-icon> Adicionar mais itens</button>
+  </div>
+
+  <ul class="order-totais">
+    <li>
+      <span>SubTotal</span>
+      <span>{{getTotal() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+    </li>
+    <li>
+      <span>Desconto</span>
+      <span class="discont">
+        <div class="payment-discont">
+          <button mat-button [ngClass]="{'active-discont': ShoppingCart.typeDiscount === 0}" (click)="ShoppingCart.typeDiscount = 0">R$</button>
+          <button mat-button [ngClass]="{'active-discont': ShoppingCart.typeDiscount === 1}" (click)="ShoppingCart.typeDiscount = 1">%</button>
+        </div>
+        <input [(ngModel)]="ShoppingCart.discount" currencyMask [options]="ShoppingCart.typeDiscount === 1 ? optionsMaskPercent : optionsMaskNormal"/>
+      </span>
+    </li>
+    <li class="order-totais-total">
+      <span>Total</span>
+      <span>{{getTotalDiscount() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+    </li>
+  </ul>
+
+  <ul class="app-list" style="margin-top: 10px; border-bottom: 1px solid rgba(149, 149, 149, 0.4)">
+    <div class="selection-title">
+      <mat-icon>person</mat-icon>
+      <span class="title-text">Dados do cliente</span>
+    </div>
+
+    <div class="search-and-select" *ngIf="!ShoppingCart?.people">
+      <button mat-button class="button-blue-border-white" routerLink="../people"><mat-icon>add</mat-icon> Selecionar cliente</button>
+    </div>
+
+    <li class="details-people" *ngIf="ShoppingCart?.people">
+      <div class="title">
+        <h3>{{ ShoppingCart.people.name }}</h3>
+        <p>{{ ShoppingCart.people.fantasy_name || '' }}</p>
+      </div>
+      <div class="description-values" style="border: none; padding-bottom: 0;">
+        <span class="value">CNPJ: <b>{{ ShoppingCart.people.document | mask: ShoppingCart.people.people_type == 0 ? '000.000.000-00' : '00.000.000/0000-00'}}</b></span>
+      </div>
+    </li>
+
+    <div class="remove-selected" *ngIf="ShoppingCart?.people" (click)="removePeople()">
+      <h4>- Remover cliente selecionado</h4>
+    </div>
+  </ul>
+
+  <div class="product-obs">
+    <div class="product-obs-title">
+      <mat-icon>textsms</mat-icon>
+      <span class="product-obs-title-text">Alguma observação?</span>
+      <span>{{ShoppingCart.observation ? ShoppingCart.observation.length + 1 : '0'}}/100</span>
+    </div>
+    <textarea (input)="setObs($event)" [(ngModel)]="ShoppingCart.observation" maxlength="100" placeholder="..."></textarea>
+  </div>
+
+  <div class="btn-add" style="width: 100%; margin-bottom: 90px;">
+    <button mat-button class="button-green-border-white" style="width: 100%;" (click)="finalizeOrder()"><mat-icon>check_circle</mat-icon> Finalizar pedido</button>
+  </div>
+</div>
+
+<app-footer></app-footer>

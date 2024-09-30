@@ -1,0 +1,34 @@
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: #fff;
+  box-shadow: 0 0 10px #c9d3dd66;
+  border-top: 1px solid #c9d3dd;
+  z-index: 99;
+
+  ul {
+    padding: 10px;
+
+    li:not(:last-child) {
+      margin-right: 30px;
+    }
+
+    li {
+      display: inline-block;
+
+      button {
+        background-color: #2687e9;
+        color: white;
+      }
+
+      p {
+        margin-top: 10px;
+        color: #204c77;
+        font-size: 12px;
+        font-weight: 600;
+      }
+    };
+  }
+}

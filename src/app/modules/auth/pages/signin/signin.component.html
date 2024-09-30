@@ -1,0 +1,36 @@
+<div class="box">
+  <div class="box-content">
+    <article class="login">
+      <div class="title">
+        <h2>SalesForce</h2>
+        <p>Solução FG Sistemas</p>
+      </div>
+
+      <div class="login-box">
+        <div class="basic-form">
+          <form [formGroup]="myForm">
+            <label>
+              <span class="field">E-mail</span>
+              <input formControlName="email" type="email" placeholder="Informe o email de acesso">
+            </label>
+            <label>
+              <span class="field">Senha</span>
+              <input formControlName="password" type="password" placeholder="Senha">
+            </label>
+          </form>
+        </div>
+
+        <div class="login-sign">
+          <button mat-button (click)="login()">Entrar</button>
+        </div>
+      </div>
+      <footer>
+        <a routerLink="/auth/recover-password">Esqueci minha senha</a>
+      </footer>
+    </article>
+  </div>
+</div>
+
+<div class="box-color"></div>
+
+<app-loading-full [loadingFull]="loadingFull"></app-loading-full>

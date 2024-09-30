@@ -1,0 +1,25 @@
+<header *ngIf="!showSearch">
+  <div class="title-back">
+    <button mat-icon-button [routerLink]="fixedHeader.routerBack" *ngIf="fixedHeader.showBackButton">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>{{fixedHeader.title}}</h2>
+  </div>
+
+  <button mat-icon-button *ngIf="fixedHeader.showSearchButton" (click)="showSearch = true; setFocus()">
+    <mat-icon>search</mat-icon>
+  </button>
+</header>
+
+<header *ngIf="showSearch">
+  <div class="search">
+    <button mat-icon-button>
+      <mat-icon>search</mat-icon>
+    </button>
+    <input id="search" #search [formControl]="fixedHeader.search" type="text" placeholder="Pesquisa rápida"/>
+    <button mat-icon-button (click)="showSearch = false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</header>
+

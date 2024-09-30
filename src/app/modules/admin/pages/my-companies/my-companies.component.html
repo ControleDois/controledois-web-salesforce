@@ -1,0 +1,15 @@
+<app-fixed-header  [fixedHeader]="fixedHeader"></app-fixed-header>
+
+<div class="app-container">
+  <ul class="app-list">
+    <li *ngFor="let person of companies" (click)="selectCompany(person.company_id)">
+      <div class="title">
+        <h3>{{ person.name }}</h3>
+        <p>{{ person.fantasy_name || '' }}</p>
+      </div>
+      <div class="description-values" style="border: none; padding-bottom: 0;">
+        <span class="value">CNPJ: <b>{{ person.document | mask: person.people_type == 0 ? '000.000.000-00' : '00.000.000/0000-00'}}</b></span>
+      </div>
+    </li>
+  </ul>
+</div>
