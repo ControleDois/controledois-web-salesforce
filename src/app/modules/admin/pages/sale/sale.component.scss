@@ -1,0 +1,25 @@
+.status-active {
+  background: #ddf1de;
+  color: #4ab858;
+  padding: 7px;
+  border-radius: 30px;
+  text-align: center;
+  font-weight: 500;
+  cursor: default;
+  max-width: 70%;
+}
+
+.actions {
+  border: 1px solid #c9d3dd;
+  background-color: #dfe6f1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  justify-content: center;
+  max-width: 80px;
+  color: #1b69c8 !important;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: "Product Sans";
+}

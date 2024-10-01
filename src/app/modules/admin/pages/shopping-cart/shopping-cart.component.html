@@ -1,7 +1,14 @@
 <app-fixed-header  [fixedHeader]="fixedHeader"></app-fixed-header>
 
 <div class="app-container">
-  <ul class="app-list">
+  <div class="selected-status" style="margin-top: 70px;">
+    <h2>Situação</h2>
+    <select [(ngModel)]="ShoppingCart.status" (change)="saveShoppingCart()">
+      <option *ngFor="let status of statusList" [value]="status.type">{{ status.name }}</option>
+    </select>
+  </div>
+
+  <ul class="app-list" style="margin-top: 10px;">
     <li *ngFor="let product of ShoppingCart?.products">
       <div class="title">
         <h3>{{ product?.shop?.name }}</h3>
@@ -32,6 +39,7 @@
       <span>SubTotal</span>
       <span>{{getTotal() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
     </li>
+
     <li>
       <span>Desconto</span>
       <span class="discont">
@@ -39,9 +47,10 @@
           <button mat-button [ngClass]="{'active-discont': ShoppingCart.typeDiscount === 0}" (click)="ShoppingCart.typeDiscount = 0">R$</button>
           <button mat-button [ngClass]="{'active-discont': ShoppingCart.typeDiscount === 1}" (click)="ShoppingCart.typeDiscount = 1">%</button>
         </div>
-        <input [(ngModel)]="ShoppingCart.discount" currencyMask [options]="ShoppingCart.typeDiscount === 1 ? optionsMaskPercent : optionsMaskNormal"/>
+        <input (change)="saveShoppingCart()" [(ngModel)]="ShoppingCart.discount" currencyMask [options]="ShoppingCart.typeDiscount === 1 ? optionsMaskPercent : optionsMaskNormal"/>
       </span>
     </li>
+
     <li class="order-totais-total">
       <span>Total</span>
       <span>{{getTotalDiscount() | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
@@ -87,4 +96,5 @@
   </div>
 </div>
 
+<app-loading-full [loadingFull]="loadingFull"></app-loading-full>
 <app-footer></app-footer>

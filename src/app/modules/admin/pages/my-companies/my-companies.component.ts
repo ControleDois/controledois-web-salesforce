@@ -28,7 +28,6 @@ import { DialogMessageService } from '../../../../shared/services/dialog-message
     RouterModule
   ],
   templateUrl: './my-companies.component.html',
-  styleUrl: './my-companies.component.scss'
 })
 export class MyCompaniesComponent implements OnInit {
   public companies: any = [];

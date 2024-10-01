@@ -43,6 +43,6 @@ export class MyProfileComponent {
 
   logout(): void {
     this.storageService.clear();
-    this.router.navigate(['/auth/signin']);
+    this.router.navigate(['/auth/slide']);
   }
 }

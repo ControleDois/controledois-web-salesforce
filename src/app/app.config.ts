@@ -6,7 +6,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { AuthResolver } from './shared/resolvers/auth.resolver';
 import { NgxCurrencyInputMode, provideEnvironmentNgxCurrency } from 'ngx-currency';
-import { registerLocaleData } from '@angular/common';
+import { DatePipe, registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -37,5 +37,7 @@ export const appConfig: ApplicationConfig = {
     }), provideServiceWorker('ngsw-worker.js', {
         enabled: !isDevMode(),
         registrationStrategy: 'registerWhenStable:30000'
-    })]
+    }),
+    DatePipe
+  ]
 };

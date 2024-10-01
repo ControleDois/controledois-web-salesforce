@@ -1,0 +1,26 @@
+.btn-group {
+  border: 1px solid #C9D3DD;
+  border-radius: 4px;
+  color: #395a7a;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+
+  .arrow-left {
+    border-right: 1px solid #C9D3DD;
+  }
+
+  .arrow-right {
+    border-left: 1px solid #C9D3DD;
+  }
+
+  .center {
+    width: 150px;
+  }
+}
+
+@media (max-width: 52em) {
+  .center {
+    width: calc(100% - 80px) !important;
+  }
+}

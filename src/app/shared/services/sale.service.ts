@@ -2,6 +2,7 @@ import {HttpParams} from '@angular/common/http';
 import {ApiService} from './api.service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,10 @@ export class SaleService {
   private resource = 'sale';
 
   constructor(
-    private apiService: ApiService
+    private apiService: ApiService,
+    private storageService: StorageService
   ) {
+
   }
 
   index(search: string, date: any, sorteBy?: string, orderBy?: string, page?: string, limit?: string): Observable<any> {
@@ -22,6 +25,7 @@ export class SaleService {
       .set('sortedBy', sorteBy || 'id')
       .set('orderBy', orderBy || 'id')
       .set('page', page || '1')
+      .set('userId', this.storageService.getAuth().user.people.id || '1')
       .set('limit', limit || '10');
 
     return this.apiService.on(this.resource, '', 'get-token-params', params);

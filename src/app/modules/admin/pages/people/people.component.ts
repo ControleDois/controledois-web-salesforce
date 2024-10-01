@@ -2,13 +2,11 @@ import { Component, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { SearchSimpleComponent } from '../../../../shared/widget/search-simple/search-simple.component';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ShoppingCart } from '../../../../shared/interfaces/shopping.cart.interface';
 import { PeopleService } from '../../../../shared/services/people.service';
 import { StorageService } from '../../../../shared/services/storage.service';
-import { DialogMessageService } from '../../../../shared/services/dialog-message.service';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { NgxMaskPipe } from 'ngx-mask';
@@ -24,7 +22,6 @@ import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interfac
     MatDividerModule,
     RouterModule,
     CommonModule,
-    SearchSimpleComponent,
     NgxMaskPipe,
     FixedHeaderComponent
   ],

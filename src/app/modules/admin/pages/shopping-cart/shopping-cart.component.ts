@@ -17,6 +17,7 @@ import { FixedHeaderComponent } from '../../../../shared/widget/fixed-header/fix
 import { SaleService } from '../../../../shared/services/sale.service';
 import { LoadingFull } from '../../../../shared/interfaces/loadingFull.interface';
 import { catchError, finalize, map, throwError } from 'rxjs';
+import { LoadingFullComponent } from '../../../../shared/widget/loading-full/loading-full.component';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -32,7 +33,8 @@ import { catchError, finalize, map, throwError } from 'rxjs';
     SearchSimpleComponent,
     NgxCurrencyDirective,
     NgxMaskPipe,
-    FixedHeaderComponent
+    FixedHeaderComponent,
+    LoadingFullComponent
   ],
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.scss'
@@ -55,6 +57,13 @@ export class ShoppingCartComponent {
     message: 'Aguarde, carregando...'
   }
 
+  public statusList = [
+    { name: '⦿ Em orçamento', type: 0 },
+    { name: '⦿ Orçamento aceito', type: 1 },
+    { name: '⦿ Orçamento recusado', type: 2 },
+    { name: '⦿ Venda', type: 3 },
+  ];
+
   constructor(
     private storageService: StorageService,
     private dialogMessageService: DialogMessageService,
@@ -65,10 +74,12 @@ export class ShoppingCartComponent {
 
     if (this.ShoppingCart === null) {
       this.ShoppingCart = {
+        id: '',
         discount: 0,
         typeDiscount: 0,
         products: [],
-        observation: ''
+        observation: '',
+        status: 0
       };
 
       this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
@@ -192,13 +203,14 @@ export class ShoppingCartComponent {
     const auth = this.storageService.getAuth();
 
     const sale = {
+      id: this.ShoppingCart.id,
       peopleId: this.ShoppingCart.people.id,
       userId: auth.user.people.id,
       categoryId: auth.company.config.sale_category_default_id,
       bankAccountId: auth.company.config.sale_bank_account_default_id,
       role: 1,
-      status: 3,
-      date_sale: new Date(),
+      status: this.ShoppingCart.status,
+      date_sale: this.ShoppingCart.date_sale || new Date(),
       amout: this.getTotal(),
       discount_type: this.ShoppingCart.typeDiscount,
       discount: this.ShoppingCart.discount,
@@ -208,7 +220,7 @@ export class ShoppingCartComponent {
     }
 
     this.saleService
-        .save('new', sale)
+        .save(this.ShoppingCart?.id || 'new', sale)
         .pipe(
           finalize(() => (this.loadingFull.active = false)),
           catchError((error) => {
@@ -221,7 +233,8 @@ export class ShoppingCartComponent {
               discount: 0,
               typeDiscount: 0,
               products: [],
-              observation: ''
+              observation: '',
+              status: 0
             };
 
             this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
@@ -239,5 +252,10 @@ export class ShoppingCartComponent {
           })
         )
         .subscribe();
+  }
+
+  saveShoppingCart() {
+    this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
+    this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
   }
 }
