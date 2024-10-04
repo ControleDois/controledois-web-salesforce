@@ -18,7 +18,7 @@ export class DashboardComponent {
   @ViewChild("meuCanvas", { static: true }) elemento: ElementRef | any;
 
   public cashFlow: Array<any> = [];
-  public isLoading = true;  // Flag de carregamento
+  public isLoading = true;  // Flag de carregamentos
 
   constructor(private dashboardService: DashboardService) {
     Chart.register(CategoryScale, BarController, BarElement, PointElement, LinearScale, Title, Legend, Tooltip);
