@@ -16,34 +16,42 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    component: DashboardComponent
+    component: DashboardComponent,
+    data: { animation: 'DashboardPage' }
   },
   {
     path: 'shopping-cart',
-    component: ShoppingCartComponent
+    component: ShoppingCartComponent,
+    data: { animation: 'ShoppingCartPage' }
   },
   {
     path: 'products',
-    component: ProductsComponent
+    component: ProductsComponent,
+    data: { animation: 'ProductsPage' }
   },
   {
     path: 'my-profile',
-    component: MyProfileComponent
+    component: MyProfileComponent,
+    data: { animation: 'MyProfilePage' }
   },
   {
     path: 'people',
-    component: PeopleComponent
+    component: PeopleComponent,
+    data: { animation: 'PeoplePage' }
   },
   {
     path: 'sale',
-    component: SaleComponent
+    component: SaleComponent,
+    data: { animation: 'SalePage' }
   },
   {
     path: 'my-companies',
-    component: MyCompaniesComponent
+    component: MyCompaniesComponent,
+    data: { animation: 'MyCompaniesPage' }
   },
   {
     path: 'sale-report-view/:id',
-    component: SaleReportViewComponent
+    component: SaleReportViewComponent,
+    data: { animation: 'SaleReportViewPage' }
   }
 ];

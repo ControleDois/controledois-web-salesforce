@@ -1,28 +1,26 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';  // Importando CommonModule
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { Chart, CategoryScale, BarController, BarElement, PointElement, LinearScale, Title, Legend, Tooltip} from 'chart.js'
+import { SkeletonLoaderComponent } from '../../../../shared/widget/skeleton-loader/skeleton-loader.component';
+import { Chart, CategoryScale, BarController, BarElement, PointElement, LinearScale, Title, Legend, Tooltip } from 'chart.js';
 import { DashboardService } from '../../../../shared/services/dashboard.service';
 import { map } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    HeaderComponent,
-    FooterComponent,
-  ],
+  imports: [CommonModule, HeaderComponent, FooterComponent, SkeletonLoaderComponent],  // Adicionando CommonModule aos imports
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
   @ViewChild("meuCanvas", { static: true }) elemento: ElementRef | any;
 
   public cashFlow: Array<any> = [];
+  public isLoading = true;  // Flag de carregamento
 
-  constructor(
-    private dashboardService: DashboardService
-  ) {
+  constructor(private dashboardService: DashboardService) {
     Chart.register(CategoryScale, BarController, BarElement, PointElement, LinearScale, Title, Legend, Tooltip);
   }
 
@@ -35,6 +33,7 @@ export class DashboardComponent {
       map(res => {
         this.cashFlow = res;
         this.showCharts();
+        this.isLoading = false;  // Desativa o skeleton após o carregamento
       })
     ).subscribe();
   }

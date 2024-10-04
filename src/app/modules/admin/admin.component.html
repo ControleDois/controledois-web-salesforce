@@ -1,5 +1,5 @@
 <div class="admin">
-  <div class="router">
-    <router-outlet></router-outlet>
+  <div class="router" [@routeAnimations]="o.isActivated ? o.activatedRouteData['animation'] : ''">
+    <router-outlet #o="outlet"></router-outlet>
   </div>
 </div>

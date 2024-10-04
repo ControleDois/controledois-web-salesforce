@@ -1,68 +1,72 @@
 <app-header></app-header>
 
-<div class="card-commission">
-  <div class="commission-content">
-    <div class="commision-value">
-      <h2>Comissão</h2>
-      <p>R$ 190,00</p>
-    </div>
-
-    <div class="commision-date">
-      <h2>Mês referente</h2>
-      <p>Outub 1 - 30</p>
-    </div>
-  </div>
+<!-- Exibir skeleton enquanto os dados estão sendo carregados -->
+<div *ngIf="isLoading; else content" style=" margin-top: 60px;">
+  <app-skeleton-loader></app-skeleton-loader>
 </div>
 
-<div class="app-container" style="margin-bottom: 100px;">
-  <ul class="app-list" style="margin-top: 10px;">
-    <li>
-      <div class="title">
-        <h2>Orçamento e vendas</h2>
-        <p>Outubro de 2024</p>
+<!-- Conteúdo da página - aparece após o carregamento -->
+<ng-template #content>
+  <div class="card-commission">
+    <div class="commission-content">
+      <div class="commision-value">
+        <h2>Comissão</h2>
+        <p>R$ 190,00</p>
       </div>
 
-      <div class="card card-vendas">
-        <div class="card-name">
-          <span>0</span>
-          <span>Vendas</span>
-        </div>
-
-        <span class="card-value"> R$ 0,00</span>
+      <div class="commision-date">
+        <h2>Mês referente</h2>
+        <p>Outubro 1 - 30</p>
       </div>
-
-      <div class="card card-orcamentos">
-        <div class="card-name">
-          <span>0</span>
-          <span>Orçamentos</span>
-        </div>
-
-        <span class="card-value"> R$ 0,00</span>
-      </div>
-
-      <div class="card card-aceitos">
-        <div class="card-name">
-          <span>0</span>
-          <span>Aceitos</span>
-        </div>
-
-        <span class="card-value"> R$ 0,00</span>
-      </div>
-
-      <div class="card card-recusados">
-        <div class="card-name">
-          <span>0</span>
-          <span>Recusados</span>
-        </div>
-
-        <span class="card-value"> R$ 0,00</span>
-      </div>
-    </li>
-  </ul>
-
-  <div class="chart">
-    <canvas #meuCanvas></canvas>
+    </div>
   </div>
-</div>
+
+  <div class="app-container" style="margin-bottom: 100px;">
+    <ul class="app-list" style="margin-top: 10px;">
+      <li>
+        <div class="title">
+          <h2>Orçamento e vendas</h2>
+          <p>Outubro de 2024</p>
+        </div>
+
+        <div class="card card-vendas">
+          <div class="card-name">
+            <span>0</span>
+            <span>Vendas</span>
+          </div>
+          <span class="card-value"> R$ 0,00</span>
+        </div>
+
+        <div class="card card-orcamentos">
+          <div class="card-name">
+            <span>0</span>
+            <span>Orçamentos</span>
+          </div>
+          <span class="card-value"> R$ 0,00</span>
+        </div>
+
+        <div class="card card-aceitos">
+          <div class="card-name">
+            <span>0</span>
+            <span>Aceitos</span>
+          </div>
+          <span class="card-value"> R$ 0,00</span>
+        </div>
+
+        <div class="card card-recusados">
+          <div class="card-name">
+            <span>0</span>
+            <span>Recusados</span>
+          </div>
+          <span class="card-value"> R$ 0,00</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="chart">
+      <canvas #meuCanvas></canvas>
+    </div>
+  </div>
+</ng-template>
 
 <app-footer></app-footer>
