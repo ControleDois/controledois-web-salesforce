@@ -75,7 +75,6 @@ export class SaleReportViewComponent implements OnInit {
           }),
           map((res) => {
             this.sale = res;
-            console.log(this.sale);
           })
         )
         .subscribe();

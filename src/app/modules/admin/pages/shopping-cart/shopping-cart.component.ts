@@ -29,7 +29,6 @@ import { LoadingFullComponent } from '../../../../shared/widget/loading-full/loa
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
-    FooterComponent,
     SearchSimpleComponent,
     NgxCurrencyDirective,
     NgxMaskPipe,
@@ -59,8 +58,6 @@ export class ShoppingCartComponent {
 
   public statusList = [
     { name: '⦿ Em orçamento', type: 0 },
-    { name: '⦿ Orçamento aceito', type: 1 },
-    { name: '⦿ Orçamento recusado', type: 2 },
     { name: '⦿ Venda', type: 3 },
   ];
 
@@ -200,6 +197,7 @@ export class ShoppingCartComponent {
   }
 
   finalizeOrder() {
+    this.loadingFull.active  = true;
     const auth = this.storageService.getAuth();
 
     const sale = {
@@ -224,11 +222,16 @@ export class ShoppingCartComponent {
         .pipe(
           finalize(() => (this.loadingFull.active = false)),
           catchError((error) => {
-            console.log(error.error);
-            //this.notificationService.warn(error.error);
+            this.dialogMessageService.openDialog({
+              icon: 'priority_high',
+              iconColor: '#ff5959',
+              title: 'Erro ao finalizar a venda',
+              message: 'Ocorreu um erro ao finalizar a venda, tente novamente mais tarde.',
+              message_next: 'Ocorreu um erro ao finalizar a venda, tente novamente mais tarde.',
+            });
             return throwError(error);
           }),
-          map(() => {
+          map((res) => {
             this.ShoppingCart = {
               discount: 0,
               typeDiscount: 0,
@@ -240,15 +243,15 @@ export class ShoppingCartComponent {
             this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
             this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
 
-            this.dialogMessageService.openDialog({
-              icon: 'done_outline',
-              iconColor: '#4caf50',
-              title: 'Pedido salvo com sucesso!',
-              message: 'O Pedido foi salvo com sucesso.',
-              message_next: 'Seu pedido foi salvo com sucesso, você pode continuar adicionando produtos ou finalizar o pedido.',
-            });
+            this.router.navigate(['sale-report-view/' + res.id]);
 
-            this.router.navigate(['']);
+            this.dialogMessageService.openDialog({
+              icon: 'done',
+              iconColor: '#4caf50',
+              title: 'Venda finalizada com sucesso',
+              message: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
+              message_next: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
+            });
           })
         )
         .subscribe();

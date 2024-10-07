@@ -18,25 +18,13 @@
 
 .card-vendas {
   ::before {
-    background-color: var(--color-primary) !important;
+    background-color: #1ed872 !important;
   }
 }
 
 .card-orcamentos {
   ::before {
-    background-color: #f5ad11 !important;
-  }
-}
-
-.card-aceitos {
-  ::before {
-    background-color: #1ed872 !important;
-  }
-}
-
-.card-recusados {
-  ::before {
-    background-color: #d81e3d !important;
+    background-color: var(--color-primary) !important;
   }
 }
 
@@ -96,3 +84,50 @@
   box-shadow: 0 0 10px #c9d3dd66;
   padding: 10px;
 }
+
+
+.help {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  img {
+    max-width: 120px;
+    margin-right: 20px;
+  }
+
+  .details {
+    color: var(--color-primary);
+    h2 {
+      font-size: 1.2em;
+    }
+  }
+}
+
+.notification {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+
+  img {
+    max-width: 120px;
+    margin-right: 20px;
+    position: absolute;
+    right: -30px;
+  }
+
+  .details {
+    color: #fff;
+
+    h2 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      max-width: 70%
+    };
+  }
+}
+

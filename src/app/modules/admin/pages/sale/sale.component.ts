@@ -42,7 +42,7 @@ export class SaleComponent implements OnInit {
   @Output() public fixedHeader: FixedHeader = {
     title: 'Vendas e Orçamentos',
     routerBack: '../shopping-cart',
-    showBackButton: true,
+    showBackButton: false,
     showSearchButton: true,
     search: new FormControl('')
   };

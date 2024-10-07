@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import {
   trigger,
   transition,
@@ -9,11 +8,14 @@ import {
   query,
   group,
 } from '@angular/animations';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { FooterComponent } from './components/footer/footer.component';
+
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, FooterComponent, RouterModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
   animations: [
@@ -31,6 +33,7 @@ import {
           ],
           { optional: true }
         ),
+
 
         group([
           query(
