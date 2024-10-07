@@ -19,43 +19,38 @@
     <li>
       <div class="title">
         <h2>Orçamento e vendas</h2>
-        <p>Outubro de 2024</p>
+        <p>{{getMesEAno()}}</p>
       </div>
 
       <div class="card card-vendas">
         <div class="card-name">
-          <span>0</span>
+          <span>{{appSalesCount?.sale_count || '0'}}</span>
           <span>Vendas</span>
         </div>
 
-        <span class="card-value"> R$ 0,00</span>
+        <span class="card-value">{{appSalesCount?.sale_value || 0 | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
       </div>
 
       <div class="card card-orcamentos">
         <div class="card-name">
-          <span>0</span>
+          <span>{{appSalesCount?.budget_count || '0'}}</span>
           <span>Orçamentos</span>
         </div>
 
-        <span class="card-value"> R$ 0,00</span>
+        <span class="card-value">{{appSalesCount?.budget_value || 0 | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
       </div>
+    </li>
+  </ul>
 
-      <div class="card card-aceitos">
-        <div class="card-name">
-          <span>0</span>
-          <span>Aceitos</span>
+  <ul class="app-list" style="margin-top: 10px;">
+    <li style="background-color: var(--color-primary);">
+      <div class="notification">
+        <div class="details">
+          <h2>Aprenda com a gente!</h2>
+          <p>Temos uma formações completa dentro de nosso app.</p>
         </div>
 
-        <span class="card-value"> R$ 0,00</span>
-      </div>
-
-      <div class="card card-recusados">
-        <div class="card-name">
-          <span>0</span>
-          <span>Recusados</span>
-        </div>
-
-        <span class="card-value"> R$ 0,00</span>
+        <img src="assets/notification-dash.png" alt="Ajuda">
       </div>
     </li>
   </ul>
@@ -63,6 +58,16 @@
   <div class="chart">
     <canvas #meuCanvas></canvas>
   </div>
-</div>
 
-<app-footer></app-footer>
+  <ul class="app-list" style="margin-top: 20px;" routerLink="../helper">
+    <li>
+      <div class="help">
+        <img src="assets/help.png" alt="Ajuda">
+        <div class="details">
+          <h2>Precisa de ajuda?</h2>
+          <p>Fale com a gente pelo Whatsapp, tire suas dúvidas e acompanhe seus chamados.</p>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -1,28 +1,29 @@
-<footer>
+<footer *ngIf="activeFooterRouter()">
   <ul>
     <li>
-      <button mat-icon-button routerLink="">
+      <button routerLinkActive="active" mat-icon-button routerLink="dashboard">
         <mat-icon>home</mat-icon>
       </button>
-      <p>Inicio</p>
     </li>
     <li>
-      <button mat-icon-button routerLink="../shopping-cart">
-        <mat-icon>shopping_cart</mat-icon>
-      </button>
-      <p>Carrinho</p>
-    </li>
-    <li>
-      <button mat-icon-button routerLink="../sale">
+      <button routerLinkActive="active" mat-icon-button routerLink="sale">
         <mat-icon>store</mat-icon>
       </button>
-      <p>Pedidos</p>
+    </li>
+    <li class="insert">
+      <button routerLinkActive="active" mat-icon-button routerLink="shopping-cart">
+        <mat-icon>add</mat-icon>
+      </button>
     </li>
     <li>
-      <button mat-icon-button>
+      <button routerLinkActive="active" mat-icon-button routerLink="charts">
+        <mat-icon>bar_chart_4_bars</mat-icon>
+      </button>
+    </li>
+    <li>
+      <button routerLinkActive="active" mat-icon-button routerLink="reports">
         <mat-icon>receipt</mat-icon>
       </button>
-      <p>Relatórios</p>
     </li>
   </ul>
 </footer>

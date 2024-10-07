@@ -7,6 +7,8 @@ import { PeopleComponent } from './pages/people/people.component';
 import { SaleComponent } from './pages/sale/sale.component';
 import { MyCompaniesComponent } from './pages/my-companies/my-companies.component';
 import { SaleReportViewComponent } from './pages/reports/sale-report-view/sale-report-view.component';
+import { HelperComponent } from './pages/helper/helper.component';
+import { ChartsComponent } from './pages/charts/charts.component';
 
 export const routes: Routes = [
   {
@@ -45,5 +47,13 @@ export const routes: Routes = [
   {
     path: 'sale-report-view/:id',
     component: SaleReportViewComponent
+  },
+  {
+    path: 'helper',
+    component: HelperComponent
+  },
+  {
+    path: 'charts',
+    component: ChartsComponent
   }
 ];

@@ -1,16 +1,22 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { HeaderComponent } from '../../components/header/header.component';
-import { FooterComponent } from '../../components/footer/footer.component';
 import { Chart, CategoryScale, BarController, BarElement, PointElement, LinearScale, Title, Legend, Tooltip} from 'chart.js'
 import { DashboardService } from '../../../../shared/services/dashboard.service';
 import { map } from 'rxjs';
+import { NgxCurrencyDirective } from 'ngx-currency';
+import { NgxMaskPipe } from 'ngx-mask';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     HeaderComponent,
-    FooterComponent,
+    RouterModule,
+    NgxCurrencyDirective,
+    NgxMaskPipe,
+    CommonModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -18,7 +24,8 @@ import { map } from 'rxjs';
 export class DashboardComponent {
   @ViewChild("meuCanvas", { static: true }) elemento: ElementRef | any;
 
-  public cashFlow: Array<any> = [];
+  public appSalesFlow: any;
+  public appSalesCount: any;
 
   constructor(
     private dashboardService: DashboardService
@@ -31,32 +38,47 @@ export class DashboardComponent {
   }
 
   load() {
-    this.dashboardService.cashFlow().pipe(
+    this.dashboardService.appSalesCount().pipe(
       map(res => {
-        this.cashFlow = res;
+        this.appSalesCount = res;
+      })
+    ).subscribe();
+
+    this.dashboardService.appSalesFlow().pipe(
+      map(res => {
+        this.appSalesFlow = res;
         this.showCharts();
       })
     ).subscribe();
   }
 
+  getMesEAno(): string {
+    const dataAtual = new Date();
+
+    // Array com os nomes dos meses
+    const meses = [
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+
+    const mes = meses[dataAtual.getMonth()];
+    const ano = dataAtual.getFullYear();
+
+    return `${mes} de ${ano}`;
+  }
+
+
   showCharts() {
     new Chart(this.elemento.nativeElement, {
       type: 'bar',
       data: {
-        labels: this.cashFlow.map(vBill => vBill.Day),
+        labels: this.appSalesFlow?.months.slice().reverse().map((item: any) => item),
         datasets: [
           {
-            label: 'Pagamentos',
-            data: this.cashFlow.map(vBill => vBill.bill_payment * -1),
-            borderColor: '#F43E61',
-            backgroundColor: '#fb859c',
-            borderWidth: 2,
-            borderRadius: 2,
-            borderSkipped: false,
-          },
-          {
-            label: 'Recebimentos',
-            data: this.cashFlow.map(vBill => vBill.bill_recebiment),
+            label: 'Vendas',
+            data: this.appSalesFlow?.data.slice().reverse().map((item: any) => {
+              return [item.sale_value, item.sale_count];
+            }),
             borderColor: '#4AB858',
             backgroundColor: '#97fda4',
             borderWidth: 2,
@@ -70,13 +92,22 @@ export class DashboardComponent {
         plugins: {
           legend: {
             position: 'top',
-            display: true,
+            display: false,
           },
           title: {
             display: true,
-            text: 'Fluxo Orçamento e Vendas Últimos 5 meses'
+            text: 'Fluxo de Vendas Últimos 5 meses'
           }
         },
+        scales: {
+          y: {
+            ticks: {
+              callback: function(value) {
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value as number);
+              }
+            }
+          }
+        }
       },
     });
   }
