@@ -23,7 +23,7 @@ import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interfac
     RouterModule,
     CommonModule,
     NgxMaskPipe,
-    FixedHeaderComponent
+    FixedHeaderComponent,
   ],
   templateUrl: './people.component.html',
 })

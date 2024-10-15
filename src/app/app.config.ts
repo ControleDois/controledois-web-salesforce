@@ -15,7 +15,11 @@ import { provideServiceWorker } from '@angular/service-worker';
 registerLocaleData(localePt, 'pt-BR');
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideAnimationsAsync(), provideHttpClient(), AuthResolver,
+  providers: [
+    provideRouter(routes),
+    provideAnimationsAsync(),
+    provideHttpClient(),
+    AuthResolver,
     provideEnvironmentNgxCurrency({
         align: "right",
         allowNegative: true,

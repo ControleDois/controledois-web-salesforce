@@ -157,7 +157,9 @@ export class ShoppingCartComponent {
   }
 
   getTotal() {
-    return this.ShoppingCart.products.reduce((acc, product) => acc + (product.amount * product?.shop?.sale_value), 0);
+    const totais = this.ShoppingCart.products.reduce((acc, product) => acc + (product.amount * product?.shop?.sale_value), 0);
+    console.log(totais);
+    return totais;
   }
 
   getTotalDiscount() {
@@ -209,7 +211,7 @@ export class ShoppingCartComponent {
       role: 1,
       status: this.ShoppingCart.status,
       date_sale: this.ShoppingCart.date_sale || new Date(),
-      amout: this.getTotal(),
+      amount: this.getTotal(),
       discount_type: this.ShoppingCart.typeDiscount,
       discount: this.ShoppingCart.discount,
       net_total: this.getTotalDiscount(),
