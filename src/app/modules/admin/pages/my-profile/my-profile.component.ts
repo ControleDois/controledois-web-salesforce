@@ -72,7 +72,6 @@ export class MyProfileComponent {
 
   updateCache(): void {
     this.updateClient();
-    this.updateProduct();
   }
 
   updateClient(): void {
@@ -91,6 +90,7 @@ export class MyProfileComponent {
           this.loadingFull.message = 'Inserindo clientes...';
           this.indexedDbService.batchInsert(res.data, 'people', res.data.length).then(() => {
             this.loadingFull.active  = false;
+            this.updateProduct();
           });
         })
       ).subscribe();
