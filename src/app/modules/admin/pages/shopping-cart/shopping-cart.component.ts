@@ -98,13 +98,14 @@ export class ShoppingCartComponent {
 
     if (productCart) {
       productCart.amount += product?.shop?.minimum_sales_quantity || 1;
+      productCart.subtotal = productCart.amount * product.cost_value;
     } else {
       this.ShoppingCart.products.push({
         product_id: product.id,
         description: product.name,
         amount: product?.shop?.minimum_sales_quantity || 1,
         cost_value: product.cost_value,
-        subtotal: product.cost_value,
+        subtotal: product.cost_value * (product?.shop?.minimum_sales_quantity || 1),
         shop: product.shop
       });
     }
@@ -118,6 +119,7 @@ export class ShoppingCartComponent {
 
     if (productCart) {
       productCart.amount -= product?.shop?.minimum_sales_quantity || 1;
+      productCart.subtotal = productCart.amount * productCart.cost_value || 0;
 
       if (productCart.amount <= 0) {
         this.ShoppingCart.products = this.ShoppingCart.products.filter(x => x.product_id !== product.product_id);
@@ -136,6 +138,7 @@ export class ShoppingCartComponent {
     if (productCart) {
       if (amount % (product?.shop?.minimum_sales_quantity || 1) === 0) {
         productCart.amount = amount;
+        productCart.subtotal = productCart.amount * product?.shop?.sale_value || 0;
 
         if (productCart.amount <= 0) {
           this.ShoppingCart.products = this.ShoppingCart.products.filter(x => x.product_id !== product.id);
@@ -158,7 +161,6 @@ export class ShoppingCartComponent {
 
   getTotal() {
     const totais = this.ShoppingCart.products.reduce((acc, product) => acc + (product.amount * product?.shop?.sale_value), 0);
-    console.log(totais);
     return totais;
   }
 
@@ -247,13 +249,13 @@ export class ShoppingCartComponent {
 
             this.router.navigate(['sale-report-view/' + res.id]);
 
-            this.dialogMessageService.openDialog({
-              icon: 'done',
-              iconColor: '#4caf50',
-              title: 'Venda finalizada com sucesso',
-              message: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
-              message_next: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
-            });
+            // this.dialogMessageService.openDialog({
+            //   icon: 'done',
+            //   iconColor: '#4caf50',
+            //   title: 'Venda finalizada com sucesso',
+            //   message: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
+            //   message_next: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
+            // });
           })
         )
         .subscribe();

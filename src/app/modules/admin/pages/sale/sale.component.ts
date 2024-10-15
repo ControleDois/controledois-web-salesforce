@@ -82,7 +82,6 @@ export class SaleComponent implements OnInit {
       '10').pipe(
       map(res => {
         this.sales = res.data;
-        console.log(this.sales);
       })
     ).subscribe();
   }
