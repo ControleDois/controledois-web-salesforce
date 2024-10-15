@@ -14,6 +14,7 @@ import { DialogMessageService } from '../../../../shared/services/dialog-message
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interface';
 import { FixedHeaderComponent } from '../../../../shared/widget/fixed-header/fixed-header.component';
+import { IndexedDbService } from '../../../../shared/services/indexed-db.service';
 
 @Component({
   selector: 'app-products',
@@ -31,6 +32,7 @@ import { FixedHeaderComponent } from '../../../../shared/widget/fixed-header/fix
   templateUrl: './products.component.html',
 })
 export class ProductsComponent implements OnInit {
+  public productsDB: any = [];
   public products: any = [];
   public ShoppingCart: ShoppingCart;
 
@@ -43,11 +45,14 @@ export class ProductsComponent implements OnInit {
   };
 
   constructor(
-    private productService: ProductService,
+    private indexedDbService: IndexedDbService,
     private storageService: StorageService,
     private dialogMessageService: DialogMessageService
   ) {
     this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
+    this.indexedDbService.getAllData('products').then((res) => {
+      this.productsDB = res;
+    });
   }
 
   ngOnInit(): void {
@@ -65,16 +70,11 @@ export class ProductsComponent implements OnInit {
   }
 
   load(): void {
-    this.productService.index(this.fixedHeader.search?.value ? this.fixedHeader.search?.value : '',
-      'name',
-      'name',
-      1,
-      10).pipe(
-      map(res => {
-        this.products = res.data;
-        //this.tableLength = res.meta.total;
-      })
-    ).subscribe();
+    this.products = this.productsDB.filter((product: any) =>
+      ['name'].some(key =>
+        product[key] && product[key].toUpperCase().includes(this.fixedHeader.search?.value ? this.fixedHeader.search?.value.toUpperCase() : '')
+      )
+    );
   }
 
   getAmount(product: any) {

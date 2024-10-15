@@ -9,6 +9,12 @@ import { FixedHeaderComponent } from '../../../../shared/widget/fixed-header/fix
 import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interface';
 import { Auth } from '../../../../shared/interfaces/auth.interface';
 import { NgxMaskPipe } from 'ngx-mask';
+import { IndexedDbService } from '../../../../shared/services/indexed-db.service';
+import { PeopleService } from '../../../../shared/services/people.service';
+import { map } from 'rxjs';
+import { LoadingFull } from '../../../../shared/interfaces/loadingFull.interface';
+import { LoadingFullComponent } from '../../../../shared/widget/loading-full/loading-full.component';
+import { ProductService } from '../../../../shared/services/product.service';
 
 @Component({
   selector: 'app-my-profile',
@@ -20,7 +26,8 @@ import { NgxMaskPipe } from 'ngx-mask';
     RouterModule,
     CommonModule,
     FixedHeaderComponent,
-    NgxMaskPipe
+    NgxMaskPipe,
+    LoadingFullComponent
   ],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss'
@@ -32,17 +39,81 @@ export class MyProfileComponent {
     showBackButton: true
   };
 
+  public clientCount: number = 0;
+  public productCount: number = 0;
+
   public auth: Auth;
+
+  public loadingFull: LoadingFull = {
+    active: false,
+    message: 'Aguarde, carregando...'
+  }
 
   constructor(
     private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private peopleService: PeopleService,
+    private productService: ProductService,
+    private indexedDbService: IndexedDbService
   ) {
     this.auth = this.storageService.getAuth();
+    this.indexedDbService.getCountStore('people').then((count) => {
+      this.clientCount = count;
+    });
+    this.indexedDbService.getCountStore('products').then((count) => {
+      this.productCount = count;
+    });
   }
 
   logout(): void {
     this.storageService.clear();
     this.router.navigate(['/auth/slide']);
+  }
+
+  updateCache(): void {
+    this.updateClient();
+    this.updateProduct();
+  }
+
+  updateClient(): void {
+    this.loadingFull.active  = true;
+    this.loadingFull.message = 'Buscando clientes...'
+
+    this.indexedDbService.clearData('people');
+
+    //Atualiza dados de clientes
+    this.peopleService.index(this.fixedHeader.search?.value ? this.fixedHeader.search?.value : '',
+      'name', 'name',  '1',
+      '10000', [
+        { param: 'roles', value: '{2}' }
+      ]).pipe(
+        map(res => {
+          this.loadingFull.message = 'Inserindo clientes...';
+          this.indexedDbService.batchInsert(res.data, 'people', res.data.length).then(() => {
+            this.loadingFull.active  = false;
+          });
+        })
+      ).subscribe();
+  }
+
+  updateProduct(): void {
+    this.loadingFull.active  = true;
+    this.loadingFull.message = 'Buscando produtos...'
+
+    this.indexedDbService.clearData('products');
+
+    //Atualiza dados de produtos
+    this.productService.index(this.fixedHeader.search?.value ? this.fixedHeader.search?.value : '',
+      'name',
+      'name',
+      1,
+      10000).pipe(
+      map(res => {
+        this.loadingFull.message = 'Inserindo produtos...';
+        this.indexedDbService.batchInsert(res.data, 'products', res.data.length).then(() => {
+          this.loadingFull.active  = false;
+        });
+      })
+    ).subscribe();
   }
 }
