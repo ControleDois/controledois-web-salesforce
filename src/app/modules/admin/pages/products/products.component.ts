@@ -4,7 +4,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { ProductService } from '../../../../shared/services/product.service';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SearchSimpleComponent } from '../../../../shared/widget/search-simple/search-simple.component';
@@ -32,7 +32,6 @@ import { IndexedDbService } from '../../../../shared/services/indexed-db.service
   templateUrl: './products.component.html',
 })
 export class ProductsComponent implements OnInit {
-  public productsDB: any = [];
   public products: any = [];
   public ShoppingCart: ShoppingCart;
 
@@ -50,31 +49,22 @@ export class ProductsComponent implements OnInit {
     private dialogMessageService: DialogMessageService
   ) {
     this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
-    this.indexedDbService.getAllData('products').then((res) => {
-      this.productsDB = res;
-    });
   }
 
   ngOnInit(): void {
     this.fixedHeader.search?.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        map(() => {
-          this.load();
-        })
-      )
-      .subscribe();
-
-    this.load();
-  }
-
-  load(): void {
-    this.products = this.productsDB.filter((product: any) =>
-      ['name'].some(key =>
-        product[key] && product[key].toUpperCase().includes(this.fixedHeader.search?.value ? this.fixedHeader.search?.value.toUpperCase() : '')
-      )
-    );
+    .pipe(
+      debounceTime(700),
+      distinctUntilChanged(),
+      filter((value) => {
+        const searchText = (value || '').toString(); // Converte o valor para string
+        return searchText.trim() !== ''; // Verifica se não está vazio
+      }),
+      switchMap((searchText) => this.indexedDbService.filterProductByText(searchText?.toString() || '')) // Realiza a busca
+    )
+    .subscribe((res: any) => {
+      this.products = res;
+    });
   }
 
   getAmount(product: any) {
@@ -125,6 +115,7 @@ export class ProductsComponent implements OnInit {
   }
 
   changeAmount(product: any, event: Event) {
+    console.log('changeAmount', product, event);
     const inputElement = event.target as HTMLInputElement;
     const amount = Number(inputElement.value);
     const productCart = this.ShoppingCart?.products.find(x => x.product_id === product.id);
@@ -139,6 +130,30 @@ export class ProductsComponent implements OnInit {
         }
       } else {
         inputElement.value = productCart.amount.toString();
+        this.dialogMessageService.openDialog({
+          icon: 'priority_high',
+          iconColor: '#ff5959',
+          title: 'Quantidade Inválida',
+          message: 'O Produto ' + product.name + ' não pode ser vendido em quantidades fracionadas.',
+          message_next: 'A quantidade informada não é válida para este produto, a quantidade mínima de compra é de ' + (product?.shop?.minimum_sales_quantity || 1),
+        });
+      }
+    } else {
+      if (amount % (product?.shop?.minimum_sales_quantity || 1) === 0) {
+        if (amount <= 0) {
+          this.ShoppingCart.products = this.ShoppingCart.products.filter(x => x.product_id !== product.id);
+        } else {
+          this.ShoppingCart.products.push({
+            product_id: product.id,
+            description: product.name,
+            amount: amount,
+            cost_value: product?.shop?.sale_value || 0,
+            subtotal: amount * product?.shop?.sale_value || 0,
+            shop: product.shop
+          });
+        }
+      } else {
+        inputElement.value = '';
         this.dialogMessageService.openDialog({
           icon: 'priority_high',
           iconColor: '#ff5959',
