@@ -1,32 +1,159 @@
-<app-fixed-header  [fixedHeader]="fixedHeader"></app-fixed-header>
+<app-fixed-header [fixedHeader]="fixedHeader"></app-fixed-header>
 
 <div class="app-container" style="margin-top: 70px; margin-bottom: 70px;">
   <app-search-date-month [date]="vDateFilter" (eventEmit)="load()"></app-search-date-month>
 
   <ul class="app-list" style="margin-top: 10px;">
-    <li *ngFor="let sale of sales">
-      <div class="title">
-        <h3>{{sale.code}} - {{ sale.people.name }}</h3>
-        <p>{{ sale.people.fantasy_name || '' }}</p>
-      </div>
+    <ng-container *ngIf="skeletonOn; else content">
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
 
-      <div class="description-values">
-        <span>Data: <b>{{ sale.date_sale | date:'dd/MM/yyyy' }}</b></span>
-        <span>Valor: <b>{{ sale?.net_total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
-      </div>
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
 
-      <div class="description-values" style="border: none; padding-bottom: 0;">
-        <span class="status-active"
-        [style.color]="getStatusColor(sale.status)"
-        [style.background]="getStatusColorBack(sale.status)">
-        {{getStatus(sale.status)}}
-        </span>
-        <span class="actions" [matMenuTriggerFor]="menu">Opções</span>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="editSale(sale.id)">Editar</button>
-          <button mat-menu-item routerLink="../sale-report-view/{{sale.id}}">Imprimir</button>
-        </mat-menu>
-      </div>
-    </li>
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+    </ng-container>
+
+    <ng-template #content>
+      <ng-container *ngIf="sales.length === 0; else salesList">
+        <div class="empty-state">
+          <div class="empty-icon"></div>
+          <img src="assets/Emptystate-Sale.png" alt="Nenhuma venda encontrada" />
+          <p>Você não adicionou nenhuma venda ou orçamento este mês.</p>
+        </div>
+      </ng-container>
+
+      <ng-template #salesList>
+        <li *ngFor="let sale of sales" style="position: relative; overflow: hidden;">
+          <div *ngIf="sale.isOff" class="offiline">Offiline</div>
+
+          <div class="title">
+            <h3>{{sale.code ? sale.code + ' - ' : ''}} {{ sale.people.name }}</h3>
+            <p>{{ sale.people.fantasy_name || '' }}</p>
+          </div>
+
+          <div class="description-values">
+            <span>Data: <b>{{ sale.date_sale | date:'dd/MM/yyyy' }}</b></span>
+            <span>Valor: <b>{{ sale?.net_total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+          </div>
+
+          <div class="description-values" style="border: none; padding-bottom: 0;">
+            <span class="status-active"
+              [style.color]="getStatusColor(sale.status)"
+              [style.background]="getStatusColorBack(sale.status)">
+              {{getStatus(sale.status)}}
+            </span>
+            <span class="actions" [matMenuTriggerFor]="menu">Opções</span>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="editSale(sale)" *ngIf="sale.status !== 3"><mat-icon>edit</mat-icon>Editar</button>
+              <button mat-menu-item routerLink="../sale-report-view/{{sale.id}}"><mat-icon>print</mat-icon>Imprimir</button>
+              <button mat-menu-item (click)="showDialogSync = true; saleSelected = sale" *ngIf="sale.isOff" style="border-top: 1px solid #ddd;"><mat-icon>bolt</mat-icon>Sincronizar</button>
+            </mat-menu>
+          </div>
+        </li>
+      </ng-template>
+    </ng-template>
   </ul>
 </div>
+
+<div class="overlay" *ngIf="showDialogSync" (click)="showDialogSync = false"></div>
+<div class="dialog" *ngIf="showDialogSync">
+  <h3>Confirmar Sincronização</h3>
+  <ul class="sale-details">
+    <li>
+      <span style="opacity: 0.4;">Código</span>
+      <span>{{saleSelected?.code}}</span>
+    </li>
+    <li>
+      <span style="opacity: 0.4;">Cliente</span>
+      <span>{{saleSelected?.people?.name}}</span>
+    </li>
+    <li *ngIf="saleSelected?.address">
+      <span style="opacity: 0.4;">Cidade & Estado</span>
+      <span>{{saleSelected?.address?.city}} - {{saleSelected?.address?.state}}</span>
+    </li>
+    <li style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+      <span style="opacity: 0.4;">Valor Total</span>
+      <span>{{ saleSelected?.net_total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+    </li>
+  </ul>
+  <div class="dialog-actions">
+    <button mat-button class="button-blue-border-white" style="width: 40%;" (click)="showDialogSync = false">Cancelar</button>
+    <button mat-button class="button-green-border-white" style="width: 40%;" (click)="syncSale(saleSelected)">Confirmar</button>
+  </div>
+</div>
+
+<app-loading-full [loadingFull]="loadingFull"></app-loading-full>

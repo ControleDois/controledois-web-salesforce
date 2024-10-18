@@ -9,6 +9,7 @@ import { MyCompaniesComponent } from './pages/my-companies/my-companies.componen
 import { SaleReportViewComponent } from './pages/reports/sale-report-view/sale-report-view.component';
 import { HelperComponent } from './pages/helper/helper.component';
 import { ChartsComponent } from './pages/charts/charts.component';
+import { animate } from '@angular/animations';
 
 export const routes: Routes = [
   {
@@ -18,42 +19,52 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    component: DashboardComponent
+    component: DashboardComponent,
+    data: { animate: 'DashboardPage' }
   },
   {
     path: 'shopping-cart',
-    component: ShoppingCartComponent
+    component: ShoppingCartComponent,
+    data: { animate: 'ShoppingCartPage' }
   },
   {
     path: 'products',
-    component: ProductsComponent
+    component: ProductsComponent,
+    data: { animate: 'ProductsPage',  }
   },
   {
     path: 'my-profile',
-    component: MyProfileComponent
+    component: MyProfileComponent,
+    data: { animate: 'MyProfilePage' }
   },
   {
     path: 'people',
-    component: PeopleComponent
+    component: PeopleComponent,
+    data: { animate: 'PeoplePage' }
   },
   {
     path: 'sale',
-    component: SaleComponent
+    component: SaleComponent,
+    data: { animate: 'SalePage' }
   },
   {
     path: 'my-companies',
-    component: MyCompaniesComponent
+    component: MyCompaniesComponent,
+    data: { animate: 'MyCompaniesPage' }
   },
   {
     path: 'sale-report-view/:id',
-    component: SaleReportViewComponent
+    component: SaleReportViewComponent,
+    data: { animate: 'SaleReportViewPage' }
   },
   {
     path: 'helper',
-    component: HelperComponent
+    component: HelperComponent,
+    data: { animate: 'HelperPage' }
   },
   {
     path: 'charts',
-    component: ChartsComponent
+    component: ChartsComponent,
+    data: { animate: 'ChartsPage' }
   }
 ];

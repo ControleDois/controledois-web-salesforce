@@ -29,7 +29,6 @@ export class SearchDateMonthComponent implements OnInit {
   setDateFilter(add: any): void {
     if (add) {
       const month = this.date.getMonth() === 11 ? 0 : this.date.getMonth() + 1;
-      console.log('month', month);
       const fullYear =
         this.date.getMonth() === 11
           ? this.date.getFullYear() + 1

@@ -1,5 +1,4 @@
 import { Component, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
-import { SaleService } from '../../../../shared/services/sale.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -9,13 +8,17 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { FixedHeaderComponent } from '../../../../shared/widget/fixed-header/fixed-header.component';
 import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interface';
 import { FormControl } from '@angular/forms';
-import { catchError, debounceTime, distinctUntilChanged, finalize, map, throwError } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map, switchMap, tap, throwError } from 'rxjs';
 import { SearchDateMonthComponent } from '../../../../shared/widget/search-date-month/search-date-month.component';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { LoadingFull } from '../../../../shared/interfaces/loadingFull.interface';
-import { DialogMessageService } from '../../../../shared/services/dialog-message.service';
 import { StorageService } from '../../../../shared/services/storage.service';
 import { ShoppingCart } from '../../../../shared/interfaces/shopping.cart.interface';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { IndexedDbService } from '../../../../shared/services/indexed-db.service';
+import { SaleService } from '../../../../shared/services/sale.service';
+import { DialogMessageService } from '../../../../shared/services/dialog-message.service';
+import { LoadingFullComponent } from '../../../../shared/widget/loading-full/loading-full.component';
 
 @Component({
   selector: 'app-sale',
@@ -29,7 +32,9 @@ import { ShoppingCart } from '../../../../shared/interfaces/shopping.cart.interf
     NgxMaskPipe,
     FixedHeaderComponent,
     SearchDateMonthComponent,
-    MatMenuModule
+    MatMenuModule,
+    NgxSkeletonLoaderModule,
+    LoadingFullComponent
   ],
   templateUrl: './sale.component.html',
   styleUrl: './sale.component.scss'
@@ -52,38 +57,47 @@ export class SaleComponent implements OnInit {
     message: 'Aguarde, carregando...'
   }
 
+  public skeletonOn: boolean = false;
+  public showDialogSync: boolean = false;
+  public saleSelected: any = {};
+
   constructor(
-    private saleService: SaleService,
     private router: Router,
-    private datePipe: DatePipe,
-    private dialogMessageService: DialogMessageService,
-    private storageService: StorageService
+    private indexedDbService: IndexedDbService,
+    private storageService: StorageService,
+    private saleService: SaleService,
+    private dialogMessageService: DialogMessageService
   ) {}
 
   ngOnInit(): void {
     this.fixedHeader.search?.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        map(() => {
-          this.load();
-        })
-      )
-      .subscribe();
+    .pipe(
+      debounceTime(700),
+      distinctUntilChanged(),
+      filter((value) => {
+        const searchText = (value || '').toString(); // Converte o valor para string
+        if (searchText === '') {
+          this.load(); // Se estiver vazio, carrega todos os registros
+        }
+        return searchText.trim() !== ''; // Verifica se não está vazio
+      }),
+      tap(() => (this.skeletonOn = true)), // Ativa o skeleton
+      switchMap((searchText) => this.indexedDbService.filterSaleByText(searchText?.toString() || '', this.vDateFilter)) // Realiza a busca
+    )
+    .subscribe((res: any) => {
+      this.sales = res;
+      this.skeletonOn = false;
+    });
 
     this.load();
   }
 
   load(): void {
-    console.log(this.datePipe.transform(this.vDateFilter, 'yyyy-MM-dd'));
-    this.saleService.index(this.fixedHeader.search?.value ? this.fixedHeader.search?.value : '',
-      this.datePipe.transform(this.vDateFilter, 'yyyy-MM-dd'), 'date_sale', 'date_sale',
-      '1',
-      '10').pipe(
-      map(res => {
-        this.sales = res.data;
-      })
-    ).subscribe();
+    this.skeletonOn = true;
+    this.indexedDbService.filterSaleByText('', this.vDateFilter).then((res: any) => {
+      this.sales = res;
+      this.skeletonOn = false;
+    });
   }
 
   getStatus(status: number): string {
@@ -131,51 +145,95 @@ export class SaleComponent implements OnInit {
     }
   }
 
-  editSale(id: string): void {
+  editSale(sale: any): void {
+    const shoppingCart: ShoppingCart = {
+      id: sale.id || '',
+      code: sale.code || '',
+      people: sale.people || {},
+      discount: sale.discount || 0,
+      typeDiscount: sale.discount_type || 0,
+      products: [],
+      observation: sale.note || '',
+      status: sale.status || 0,
+      date_sale: sale.date_sale || new Date()
+    };
+
+    if (sale.products) {
+      for (let i = 0; i < sale.products.length; i++) {
+        shoppingCart.products.push({
+          product_id: sale.products[i].product_id || '',
+          description: sale.products[i].description || '',
+          amount: sale.products[i].amount || 0,
+          cost_value: sale.products[i].cost_value || 0,
+          subtotal: sale.products[i].subtotal || 0,
+          shop: (sale.products[i]?.product?.shop || sale.products[i]?.shop) || {}
+        });
+      }
+    }
+
+    this.storageService.setList('SalesForce/ShoppingCart', shoppingCart);
+    this.router.navigate(['../shopping-cart']);
+  }
+
+  syncSale(sale: any): void {
+    this.loadingFull.active = true;
+
+    const auth = this.storageService.getAuth();
+    const saleSync = {
+      id: sale.id,
+      peopleId: sale.people.id,
+      userId: auth.user.people.id,
+      categoryId: auth.company.config.sale_category_default_id,
+      bankAccountId: auth.company.config.sale_bank_account_default_id,
+      role: 1,
+      status: sale.status,
+      date_sale: sale.date_sale || new Date(),
+      amount: sale.amount,
+      discount_type: sale.discount_type,
+      discount: sale.discount,
+      net_total: sale.net_total,
+      products: this.getSaleProducts(sale),
+      note: sale.note
+    };
+
     this.saleService
-        .show(id)
+        .save(sale?.id.length !== 36 ? 'new' : sale.id, saleSync)
         .pipe(
           finalize(() => (this.loadingFull.active = false)),
           catchError((error) => {
             this.dialogMessageService.openDialog({
               icon: 'priority_high',
               iconColor: '#ff5959',
-              title: 'Pedido não encontrado',
-              message: 'O pedido não foi encontrado, por favor, tente novamente.',
-              message_next: 'O pedido pode ter sido excluído ou não existe mais.',
+              title: 'Erro ao finalizar a venda',
+              message: 'Ocorreu um erro ao finalizar a venda, tente novamente mais tarde.',
+              message_next: 'Ocorreu um erro ao finalizar a venda, tente novamente mais tarde.',
             });
-            this.router.navigate(['../sale']);
             return throwError(error);
           }),
           map((res) => {
-            const shoppingCart: ShoppingCart = {
-              id: res.id || '',
-              people: res.people || {},
-              discount: res.discount || 0,
-              typeDiscount: res.discount_type || 0,
-              products: [],
-              observation: res.note || '',
-              status: res.status || 0,
-              date_sale: res.date_sale || new Date()
-            };
+            //deleto o registro antigo
+            this.indexedDbService.deleteData(saleSync.id, 'sales');
+            sale.id = res.id;
+            sale.code = res.code;
+            sale.isOff = false;
 
-            if (res.products) {
-              for (let i = 0; i < res.products.length; i++) {
-                shoppingCart.products.push({
-                  product_id: res.products[i].product_id || '',
-                  description: res.products[i].description || '',
-                  amount: res.products[i].amount || 0,
-                  cost_value: res.products[i].cost_value || 0,
-                  subtotal: res.products[i].subtotal || 0,
-                  shop: res.products[i].product.shop || {}
-                });
-              }
-            }
-
-            this.storageService.setList('SalesForce/ShoppingCart', shoppingCart);
-            this.router.navigate(['../shopping-cart']);
+            //salvo o novo registro
+            this.indexedDbService.addData(sale, 'sales');
+            this.loadingFull.active = false;
+            this.saleSelected = {};
           })
         )
         .subscribe();
+  }
+
+  getSaleProducts(sale: any): any[] {
+    return sale.products.map((product: any) => {
+      return {
+        product_id: product?.product_id,
+        amount: product?.amount,
+        cost_value: product?.cost_value,
+        subtotal: product?.subtotal
+      }
+    });
   }
 }

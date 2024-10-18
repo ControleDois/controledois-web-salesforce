@@ -9,7 +9,7 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ShoppingCart } from '../../../../shared/interfaces/shopping.cart.interface';
 import { StorageService } from '../../../../shared/services/storage.service';
 import { DialogMessageService } from '../../../../shared/services/dialog-message.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 import { NgxMaskPipe } from 'ngx-mask';
 import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interface';
@@ -18,6 +18,7 @@ import { SaleService } from '../../../../shared/services/sale.service';
 import { LoadingFull } from '../../../../shared/interfaces/loadingFull.interface';
 import { catchError, finalize, map, throwError } from 'rxjs';
 import { LoadingFullComponent } from '../../../../shared/widget/loading-full/loading-full.component';
+import { IndexedDbService } from '../../../../shared/services/indexed-db.service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -65,6 +66,8 @@ export class ShoppingCartComponent {
     private storageService: StorageService,
     private dialogMessageService: DialogMessageService,
     private saleService: SaleService,
+    private indexedDbService: IndexedDbService,
+    private datePipe: DatePipe,
     private router: Router
   ) {
     this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
@@ -195,74 +198,63 @@ export class ShoppingCartComponent {
         product_id: product.product_id,
         amount: product.amount,
         cost_value: product.cost_value,
-        subtotal: product.subtotal
+        subtotal: product.subtotal,
+        shop: product?.shop
       }
     });
   }
 
   finalizeOrder() {
-    this.loadingFull.active  = true;
+    //this.loadingFull.active  = true;
     const auth = this.storageService.getAuth();
 
     const sale = {
-      id: this.ShoppingCart.id,
+      id: this.ShoppingCart?.id || 'new',
+      code: this.ShoppingCart?.code || '',
       peopleId: this.ShoppingCart.people.id,
       userId: auth.user.people.id,
       categoryId: auth.company.config.sale_category_default_id,
       bankAccountId: auth.company.config.sale_bank_account_default_id,
       role: 1,
+      people: this.ShoppingCart.people,
       status: this.ShoppingCart.status,
-      date_sale: this.ShoppingCart.date_sale || new Date(),
+      date_sale: this.ShoppingCart.date_sale || (new Date().toISOString()),
       amount: this.getTotal(),
       discount_type: this.ShoppingCart.typeDiscount,
       discount: this.ShoppingCart.discount,
       net_total: this.getTotalDiscount(),
       products: this.getSaleProducts(),
-      note: this.ShoppingCart.observation
+      note: this.ShoppingCart.observation,
+      isOff: true
     }
 
-    this.saleService
-        .save(this.ShoppingCart?.id || 'new', sale)
-        .pipe(
-          finalize(() => (this.loadingFull.active = false)),
-          catchError((error) => {
-            this.dialogMessageService.openDialog({
-              icon: 'priority_high',
-              iconColor: '#ff5959',
-              title: 'Erro ao finalizar a venda',
-              message: 'Ocorreu um erro ao finalizar a venda, tente novamente mais tarde.',
-              message_next: 'Ocorreu um erro ao finalizar a venda, tente novamente mais tarde.',
-            });
-            return throwError(error);
-          }),
-          map((res) => {
-            this.ShoppingCart = {
-              discount: 0,
-              typeDiscount: 0,
-              products: [],
-              observation: '',
-              status: 0
-            };
+    if (sale.id !== 'new') {
+      this.indexedDbService.updateData(sale, 'sales');
+    } else {
+      sale.id = this.gerateNewId();
+      this.indexedDbService.addData(sale, 'sales');
+    }
 
-            this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
-            this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
+    this.ShoppingCart = {
+      discount: 0,
+      typeDiscount: 0,
+      products: [],
+      observation: '',
+      status: 0
+    };
 
-            this.router.navigate(['sale-report-view/' + res.id]);
+    this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
+    this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
 
-            // this.dialogMessageService.openDialog({
-            //   icon: 'done',
-            //   iconColor: '#4caf50',
-            //   title: 'Venda finalizada com sucesso',
-            //   message: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
-            //   message_next: 'A venda foi finalizada com sucesso, clique em OK para visualizar o relatório da venda.',
-            // });
-          })
-        )
-        .subscribe();
+    this.router.navigate(['sale-report-view/' + sale.id]);
   }
 
   saveShoppingCart() {
     this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
     this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
+  }
+
+  gerateNewId(): string {
+    return Math.random().toString(36).substr(2, 9);
   }
 }

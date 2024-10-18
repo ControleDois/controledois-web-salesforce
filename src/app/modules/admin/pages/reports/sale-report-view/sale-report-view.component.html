@@ -70,13 +70,13 @@
     </div>
   </section>
 
-  <section class="products-grid">
+  <section class="products-grid" *nfIf="sale?.note">
     <ul class="products-grid-header">
       <li style="text-align: left">Observação da Venda</li>
     </ul>
 
     <ul class="products-grid-list">
-      <li style="text-align: left">que</li>
+      <li style="text-align: left">{{sale?.note}}</li>
     </ul>
   </section>
 

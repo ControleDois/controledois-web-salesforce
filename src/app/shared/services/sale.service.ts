@@ -17,16 +17,17 @@ export class SaleService {
 
   }
 
-  index(search: string, date: any, sorteBy?: string, orderBy?: string, page?: string, limit?: string): Observable<any> {
+  index(search: string, date?: any, sorteBy?: string, orderBy?: string, page?: string, limit?: string, product?: boolean): Observable<any> {
     const params = new HttpParams()
       .set('role', '1')
       .set('search', search)
       .set('date', date)
-      .set('sortedBy', sorteBy || 'id')
-      .set('orderBy', orderBy || 'id')
-      .set('page', page || '1')
-      .set('userId', this.storageService.getAuth().user.people.id || '1')
-      .set('limit', limit || '10');
+      .set('sortedBy', sorteBy || '')
+      .set('orderBy', orderBy || '')
+      .set('page', page || '')
+      .set('userId', this.storageService.getAuth().user.people.id || '')
+      .set('limit', limit || '')
+      .set('product', product || false);
 
     return this.apiService.on(this.resource, '', 'get-token-params', params);
   }

@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  api: 'https://api.ctrix.com.br',
+  api: 'http://192.168.1.5:3333',
 };

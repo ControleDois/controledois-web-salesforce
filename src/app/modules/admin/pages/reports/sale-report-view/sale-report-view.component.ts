@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { CommonModule } from '@angular/common';
 import html2pdf from 'html2pdf.js';
+import { IndexedDbService } from '../../../../../shared/services/indexed-db.service';
 
 @Component({
   selector: 'app-sale-report-view',
@@ -42,11 +43,11 @@ export class SaleReportViewComponent implements OnInit {
   }
 
   constructor(
-    private saleService: SaleService,
     private activatedRoute: ActivatedRoute,
     private dialogMessageService: DialogMessageService,
     private router: Router,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private indexDBService: IndexedDbService,
   ) {
     this.saleId = this.activatedRoute.snapshot.params['id'];
     this.auth = this.storageService.getAuth();
@@ -58,26 +59,20 @@ export class SaleReportViewComponent implements OnInit {
   }
 
   load() {
-    this.saleService
-        .show(this.saleId)
-        .pipe(
-          finalize(() => (this.loadingFull.active = false)),
-          catchError((error) => {
-            this.dialogMessageService.openDialog({
-              icon: 'priority_high',
-              iconColor: '#ff5959',
-              title: 'Pedido não encontrado',
-              message: 'O pedido não foi encontrado, por favor, tente novamente.',
-              message_next: 'O pedido pode ter sido excluído ou não existe mais.',
-            });
-            this.router.navigate(['../sale']);
-            return throwError(error);
-          }),
-          map((res) => {
-            this.sale = res;
-          })
-        )
-        .subscribe();
+    this.indexDBService.getData(this.saleId, 'sales').then((res) => {
+      if (res) {
+        this.sale = res;
+      } else {
+        this.dialogMessageService.openDialog({
+          icon: 'priority_high',
+          iconColor: '#ff5959',
+          title: 'Pedido não encontrado',
+          message: 'O pedido não foi encontrado, por favor, tente novamente.',
+          message_next: 'O pedido pode ter sido excluído ou não existe mais.',
+        });
+        this.router.navigate(['../sale']);
+      }
+    });
   }
 
   getDateNow(): string {

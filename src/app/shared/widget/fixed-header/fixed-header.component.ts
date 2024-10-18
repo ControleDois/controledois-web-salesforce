@@ -31,4 +31,9 @@ export class FixedHeaderComponent {
       this.search.nativeElement.focus();
     }, 5);
   }
+
+  closeSearch() {
+    this.fixedHeader.search.setValue('');
+    this.showSearch = false;
+  }
 }

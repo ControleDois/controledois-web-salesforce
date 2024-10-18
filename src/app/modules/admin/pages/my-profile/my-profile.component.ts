@@ -15,6 +15,7 @@ import { map } from 'rxjs';
 import { LoadingFull } from '../../../../shared/interfaces/loadingFull.interface';
 import { LoadingFullComponent } from '../../../../shared/widget/loading-full/loading-full.component';
 import { ProductService } from '../../../../shared/services/product.service';
+import { SaleService } from '../../../../shared/services/sale.service';
 
 @Component({
   selector: 'app-my-profile',
@@ -41,6 +42,7 @@ export class MyProfileComponent {
 
   public clientCount: number = 0;
   public productCount: number = 0;
+  public salesCount: number = 0;
 
   public auth: Auth;
 
@@ -54,6 +56,7 @@ export class MyProfileComponent {
     private router: Router,
     private peopleService: PeopleService,
     private productService: ProductService,
+    private saleService: SaleService,
     private indexedDbService: IndexedDbService
   ) {
     this.auth = this.storageService.getAuth();
@@ -62,6 +65,9 @@ export class MyProfileComponent {
     });
     this.indexedDbService.getCountStore('products').then((count) => {
       this.productCount = count;
+    });
+    this.indexedDbService.getCountStore('sales').then((count) => {
+      this.salesCount = count;
     });
   }
 
@@ -111,6 +117,23 @@ export class MyProfileComponent {
       map(res => {
         this.loadingFull.message = 'Inserindo produtos...';
         this.indexedDbService.batchInsert(res.data, 'products', res.data.length).then(() => {
+          this.loadingFull.active  = false;
+          this.updateSales();
+        });
+      })
+    ).subscribe();
+  }
+
+  updateSales(): void {
+    this.loadingFull.active  = true;
+    this.loadingFull.message = 'Buscando vendas & orçamentos...'
+
+    this.indexedDbService.clearData('sales');
+
+    this.saleService.index(this.fixedHeader.search?.value ? this.fixedHeader.search?.value : '', null, '', '', '', '', true).pipe(
+      map(res => {
+        this.loadingFull.message = 'Inserindo vendas & orçamentos...';
+        this.indexedDbService.batchInsert(res, 'sales', res.length).then(() => {
           this.loadingFull.active  = false;
         });
       })
