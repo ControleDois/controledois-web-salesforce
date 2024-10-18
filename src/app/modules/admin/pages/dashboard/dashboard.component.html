@@ -1,45 +1,62 @@
 <app-header></app-header>
 
-<!-- <div class="card-commission">
-  <div class="commission-content">
-    <div class="commision-value">
-      <h2>Comissão</h2>
-      <p>R$ 190,00</p>
-    </div>
-
-    <div class="commision-date">
-      <h2>Mês referente</h2>
-      <p>Outub 1 - 30</p>
-    </div>
-  </div>
-</div> -->
-
 <div class="app-container" style="margin-bottom: 100px;">
   <ul class="app-list" style="margin-top: 80px;">
-    <li>
-      <div class="title">
-        <h2>Orçamento e vendas</h2>
-        <p>{{getMesEAno()}}</p>
-      </div>
-
-      <div class="card card-vendas">
-        <div class="card-name">
-          <span>{{appSalesCount?.sale_count || '0'}}</span>
-          <span>Vendas</span>
+    <ng-container *ngIf="skeletonOn; else contentSale">
+      <li class="skeleton-item">
+        <div class="title">
+          <h2 class="skeleton-line" style="width: 80%;"></h2>
+          <p class="skeleton-line" style="width: 60%;"></p>
         </div>
 
-        <span class="card-value">{{appSalesCount?.sale_value || 0 | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
-      </div>
-
-      <div class="card card-orcamentos">
-        <div class="card-name">
-          <span>{{appSalesCount?.budget_count || '0'}}</span>
-          <span>Orçamentos</span>
+        <div class="card skeleton-card">
+          <div class="card-name">
+            <span class="skeleton-line" style="width: 30%;"></span>
+            <span class="skeleton-line" style="width: 40%;"></span>
+          </div>
         </div>
 
-        <span class="card-value">{{appSalesCount?.budget_value || 0 | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
-      </div>
-    </li>
+        <div class="card skeleton-card">
+          <div class="card-name">
+            <span class="skeleton-line" style="width: 30%;"></span>
+            <span class="skeleton-line" style="width: 40%;"></span>
+          </div>
+        </div>
+      </li>
+    </ng-container>
+
+    <ng-template #contentSale>
+      <ng-container *ngIf="!appSalesCount; else dashSales">
+        <p>sem dados</p>
+      </ng-container>
+
+      <ng-template #dashSales>
+        <li>
+          <div class="title">
+            <h2>Orçamento e vendas</h2>
+            <p>{{getMesEAno()}}</p>
+          </div>
+
+          <div class="card card-vendas">
+            <div class="card-name">
+              <span>{{appSalesCount?.sale_count || '0'}}</span>
+              <span>Vendas</span>
+            </div>
+
+            <span class="card-value">{{appSalesCount?.sale_value || 0 | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
+          </div>
+
+          <div class="card card-orcamentos">
+            <div class="card-name">
+              <span>{{appSalesCount?.budget_count || '0'}}</span>
+              <span>Orçamentos</span>
+            </div>
+
+            <span class="card-value">{{appSalesCount?.budget_value || 0 | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</span>
+          </div>
+        </li>
+      </ng-template>
+    </ng-template>
   </ul>
 
   <ul class="app-list" style="margin-top: 10px;">

@@ -47,7 +47,7 @@
     </ul>
 
     <ul class="products-grid-list" *ngFor="let product of sale?.products; index as i">
-      <li style="width: 55%">{{product?.product.shop?.name}}</li>
+      <li style="width: 55%">{{product?.product?.shop?.name || product?.shop?.name}}</li>
       <!-- <li style="width: 30%">{{product.description}}</li> -->
       <li style="text-align: right">{{product?.amount}}</li>
       <li style="text-align: right">{{product?.cost_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</li>
@@ -70,7 +70,7 @@
     </div>
   </section>
 
-  <section class="products-grid" *nfIf="sale?.note">
+  <section class="products-grid" *ngIf="sale?.note">
     <ul class="products-grid-header">
       <li style="text-align: left">Observação da Venda</li>
     </ul>

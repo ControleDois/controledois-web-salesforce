@@ -26,6 +26,7 @@ export class DashboardComponent {
 
   public appSalesFlow: any;
   public appSalesCount: any;
+  public skeletonOn: boolean = true;
 
   constructor(
     private dashboardService: DashboardService
@@ -41,6 +42,7 @@ export class DashboardComponent {
     this.dashboardService.appSalesCount().pipe(
       map(res => {
         this.appSalesCount = res;
+        this.skeletonOn = false;
       })
     ).subscribe();
 

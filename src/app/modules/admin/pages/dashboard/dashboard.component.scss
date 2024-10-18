@@ -1,21 +1,3 @@
-.card-commission {
-  background-color: var(--color-primary);
-  margin-top: 60px;
-  min-height: 100px;
-  border-bottom-right-radius: 100px;
-  position: relative;
-
-  .commission-content {
-    min-height: 80px;
-    background-color: #1f66ad;
-    margin: 0 10px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px #c9d3dd66;
-    display: flex;
-    justify-content: space-between;
-  }
-}
-
 .card-vendas {
   ::before {
     background-color: #1ed872 !important;
@@ -130,4 +112,55 @@
     };
   }
 }
+
+.skeleton-item {
+  background: #e0e0e0; /* Cor de fundo do loader */
+  border-radius: 15px; /* Bordas arredondadas */
+  margin-bottom: 20px; /* Espaçamento entre os loaders */
+  padding: 20px; /* Padding interno */
+}
+
+.skeleton-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  margin: 10px 0;
+  border-radius: 10px;
+  position: relative;
+  background-color: #90979e; /* Cor de fundo do skeleton */
+  animation: pulse 1.5s infinite; /* Animação de pulsação */
+}
+
+.skeleton-line {
+  background-color: #90979e; /* Cor de fundo das linhas */
+  border-radius: 4px; /* Arredondar as bordas */
+  height: 1em; /* Altura padrão para as linhas */
+  margin: 0.5em 0; /* Margem superior e inferior */
+  animation: pulse 1.5s infinite; /* Animação de pulsação */
+}
+
+.skeleton-name {
+  flex: 1; /* Permite que a linha ocupe espaço disponível */
+}
+
+.skeleton-value {
+  width: 100px; /* Largura fixa para o valor */
+  height: 1.5em; /* Altura do valor */
+  background-color: #90979e; /* Cor do fundo */
+  border-radius: 4px; /* Arredondar as bordas */
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #e0e0e0;
+  }
+  50% {
+    background-color: #d0d0d0;
+  }
+  100% {
+    background-color: #e0e0e0;
+  }
+}
+
 
