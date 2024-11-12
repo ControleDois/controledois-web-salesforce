@@ -95,7 +95,7 @@ export class SaleComponent implements OnInit {
   load(): void {
     this.skeletonOn = true;
     this.indexedDbService.filterSaleByText('', this.vDateFilter).then((res: any) => {
-      this.sales = res;
+      this.sales = res.sort((a: any, b: any) => new Date(b.date_sale).getTime() - new Date(a.date_sale).getTime());
       this.skeletonOn = false;
     });
   }
@@ -110,6 +110,8 @@ export class SaleComponent implements OnInit {
         return 'Orçamento recusado';
       case 3:
           return 'Venda';
+      case 4:
+          return 'Venda / Sincronizada'
       default:
         return 'Venda'
     }
@@ -125,6 +127,8 @@ export class SaleComponent implements OnInit {
         return '#F43E61';
       case 3:
         return '#2687E9';
+      case 4:
+        return '#17426d';
       default:
         return '#2687E9'
     }
@@ -140,6 +144,8 @@ export class SaleComponent implements OnInit {
         return '#FCD9E0';
       case 3:
         return '#DBE6FE';
+      case 4:
+        return '#d9ecff';
       default:
         return '#DBE6FE'
     }

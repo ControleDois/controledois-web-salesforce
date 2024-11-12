@@ -1,0 +1,166 @@
+.status-active {
+  background: #ddf1de;
+  color: #4ab858;
+  padding: 7px;
+  border-radius: 30px;
+  text-align: center;
+  font-weight: 500;
+  cursor: default;
+  max-width: 70%;
+}
+
+.actions {
+  border: 1px solid #c9d3dd;
+  background-color: #dfe6f1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  justify-content: center;
+  max-width: 80px;
+  color: #1b69c8 !important;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: "Product Sans";
+}
+
+.skeleton-item {
+  background: #e0e0e0; /* Cor de fundo do loader */
+  border-radius: 15px; /* Bordas arredondadas */
+  margin-bottom: 20px; /* Espaçamento entre os loaders */
+  padding: 20px; /* Padding interno */
+}
+
+.skeleton-line {
+  display: block;
+  height: 20px; /* Altura das linhas do loader */
+  background: #d0d0d0; /* Cor das linhas */
+  border-radius: 10px; /* Bordas arredondadas */
+  margin-bottom: 10px; /* Espaço entre as linhas */
+  animation: pulse 1.5s infinite; /* Animação opcional */
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #e0e0e0;
+  }
+  50% {
+    background-color: #d0d0d0;
+  }
+  100% {
+    background-color: #e0e0e0;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  margin-top: 50px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.empty-icon {
+  width: 100px;
+  height: 100px;
+  background: url('https://example.com/your-empty-icon.svg') no-repeat center center; /* Troque pelo URL do seu ícone */
+  background-size: contain;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+.empty-state img {
+  max-width: 120px;
+}
+
+.empty-state p {
+  margin: 20px auto 0 auto;
+  color: #666;
+  font-size: 1em;
+  max-width: 250px;
+}
+
+.offiline {
+  position: absolute;
+  top: 5px;
+  right: -19px;
+  background-color: red;
+  color: white;
+  padding: 2px 23px;
+  transform: rotate(33deg);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Estilos para o fundo escurecido */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+.dialog {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px 10px 0 0;
+  z-index: 101;
+  transform: translateY(100%);
+  animation: slide-up 0.4s forwards;
+}
+
+/* Animação de subida */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para os botões */
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sale-details {
+  background: #f1f4f9;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 10px;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+  }
+}

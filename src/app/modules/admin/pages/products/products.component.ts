@@ -4,7 +4,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { ProductService } from '../../../../shared/services/product.service';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, from, map, of, switchMap, tap } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SearchSimpleComponent } from '../../../../shared/widget/search-simple/search-simple.component';
@@ -15,6 +15,8 @@ import { NgxCurrencyDirective } from 'ngx-currency';
 import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interface';
 import { FixedHeaderComponent } from '../../../../shared/widget/fixed-header/fixed-header.component';
 import { IndexedDbService } from '../../../../shared/services/indexed-db.service';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-products',
@@ -27,13 +29,17 @@ import { IndexedDbService } from '../../../../shared/services/indexed-db.service
     CommonModule,
     SearchSimpleComponent,
     NgxCurrencyDirective,
-    FixedHeaderComponent
+    FixedHeaderComponent,
+    NgxSkeletonLoaderModule,
+    MatMenuModule
   ],
   templateUrl: './products.component.html',
+  styleUrl: './products.component.scss'
 })
 export class ProductsComponent implements OnInit {
   public products: any = [];
   public ShoppingCart: ShoppingCart;
+  public skeletonOn: boolean = false;
 
   @Output() public fixedHeader: FixedHeader = {
     title: 'Lista de Produtos',
@@ -57,10 +63,19 @@ export class ProductsComponent implements OnInit {
       debounceTime(700),
       distinctUntilChanged(),
       filter((value) => {
-        const searchText = (value || '').toString(); // Converte o valor para string
+        const searchText = (value || '').toString();
         return searchText.trim() !== ''; // Verifica se não está vazio
       }),
-      switchMap((searchText) => this.indexedDbService.filterProductByText(searchText?.toString() || '')) // Realiza a busca
+      tap(() => this.skeletonOn = true), // Ativa o skeleton
+      switchMap((searchText) =>
+        from(this.indexedDbService.filterProductByText(searchText?.toString() || '')).pipe(
+          catchError((error) => {
+            console.error(error); // Loga qualquer erro
+            return of([]); // Retorna uma lista vazia em caso de erro
+          }),
+          finalize(() => this.skeletonOn = false) // Desativa o skeleton quando a operação termina
+        )
+      )
     )
     .subscribe((res: any) => {
       this.products = res;

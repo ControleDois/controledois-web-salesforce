@@ -59,3 +59,18 @@
 .indicators span.active {
   background-color: white;
 }
+
+@media (min-height: 600px) {
+  .slider {
+    margin-bottom: 70px;
+  }
+}
+
+@media (min-width: 360px) {
+  .slide {
+    p {
+      max-width: 80%;
+      margin: 0 auto;
+    }
+  }
+}

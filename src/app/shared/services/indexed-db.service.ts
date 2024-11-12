@@ -67,20 +67,32 @@ export class IndexedDbService {
     return db.transaction(storeName, 'readwrite').objectStore(storeName).clear();
   }
 
-  async batchInsert(dataArray: any[], storeName: string, batchSize: number) {
+  async batchInsert(dataArray: any[], storeName: string, batchSize: number): Promise<void> {
     const db = await this.dbPromise;
 
+    // Divide os dados em lotes de batchSize
     for (let i = 0; i < dataArray.length; i += batchSize) {
       const batch = dataArray.slice(i, i + batchSize);
 
+      // Inicia a transação
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
 
-      for (const data of batch) {
-        await store.add(data);
-      }
+      // Processa cada dado no lote
+      const promises = batch.map(async (data) => {
+        try {
+          // Usa 'put' para evitar conflito de chaves duplicadas
+          await store.put(data);
+        } catch (err) {
+          console.warn(`Erro ao adicionar/atualizar o item com id ${data.id}:`, err);
+        }
+      });
 
-      await tx.done; // aguarda a finalização da transação
+      // Aguarda todas as operações do lote antes de passar para o próximo
+      await Promise.all(promises);
+
+      // Aguarda a finalização da transação
+      await tx.done;
     }
   }
 
@@ -155,5 +167,25 @@ export class IndexedDbService {
     });
 
     return filteredSales;
+  }
+
+  async deleteDatabase(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.deleteDatabase('controledois_web_salesforce');
+
+      request.onsuccess = () => {
+        console.log(`Banco de dados controledois_web_salesforce deletado com sucesso.`);
+        resolve();
+      };
+
+      request.onerror = (event) => {
+        console.error(`Erro ao deletar o banco de dados controledois_web_salesforce:`, event);
+        reject(event);
+      };
+
+      request.onblocked = () => {
+        console.warn(`A exclusão do banco de dados controledois_web_salesforce foi bloqueada.`);
+      };
+    });
   }
 }

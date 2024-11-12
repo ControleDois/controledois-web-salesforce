@@ -98,7 +98,7 @@
 
       <ng-template #salesList>
         <li *ngFor="let sale of sales" style="position: relative; overflow: hidden;">
-          <div *ngIf="sale.isOff" class="offiline">Offiline</div>
+          <div *ngIf="sale.isOff" class="offiline">Off-line</div>
 
           <div class="title">
             <h3>{{sale.code ? sale.code + ' - ' : ''}} {{ sale.people.name }}</h3>
@@ -120,7 +120,7 @@
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="editSale(sale)" *ngIf="sale.status !== 3"><mat-icon>edit</mat-icon>Editar</button>
               <button mat-menu-item routerLink="../sale-report-view/{{sale.id}}"><mat-icon>print</mat-icon>Imprimir</button>
-              <button mat-menu-item (click)="showDialogSync = true; saleSelected = sale" *ngIf="sale.isOff" style="border-top: 1px solid #ddd;"><mat-icon>bolt</mat-icon>Sincronizar</button>
+              <!-- <button mat-menu-item (click)="showDialogSync = true; saleSelected = sale" *ngIf="sale.isOff" style="border-top: 1px solid #ddd;"><mat-icon>bolt</mat-icon>Sincronizar</button> -->
             </mat-menu>
           </div>
         </li>

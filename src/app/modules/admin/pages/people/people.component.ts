@@ -7,7 +7,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ShoppingCart } from '../../../../shared/interfaces/shopping.cart.interface';
 import { StorageService } from '../../../../shared/services/storage.service';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, from, map, of, switchMap, tap } from 'rxjs';
 import { NgxMaskPipe } from 'ngx-mask';
 import { FixedHeaderComponent } from '../../../../shared/widget/fixed-header/fixed-header.component';
 import { FixedHeader } from '../../../../shared/interfaces/fixed.header.interface';
@@ -26,11 +26,13 @@ import { IndexedDbService } from '../../../../shared/services/indexed-db.service
     FixedHeaderComponent,
   ],
   templateUrl: './people.component.html',
+  styleUrl: './people.component.scss'
 })
 export class PeopleComponent implements OnInit {
   public peopleDB: any = [];
   public people: any = [];
   public ShoppingCart: ShoppingCart;
+  public skeletonOn: boolean = false;
 
   @Output() public fixedHeader: FixedHeader = {
     title: 'Lista de Clientes',
@@ -54,13 +56,22 @@ export class PeopleComponent implements OnInit {
       debounceTime(700),
       distinctUntilChanged(),
       filter((value) => {
-        const searchText = (value || '').toString(); // Converte o valor para string
+        const searchText = (value || '').toString();
         return searchText.trim() !== ''; // Verifica se não está vazio
       }),
-      switchMap((searchText) => this.indexedDbService.filterPeopleByText(searchText?.toString() || '')) // Realiza a busca
+      tap(() => this.skeletonOn = true), // Ativa o skeleton
+      switchMap((searchText) =>
+        from(this.indexedDbService.filterPeopleByText(searchText?.toString() || '')).pipe(
+          catchError((error) => {
+            console.error(error); // Loga qualquer erro
+            return of([]); // Retorna uma lista vazia em caso de erro
+          }),
+          finalize(() => this.skeletonOn = false) // Desativa o skeleton quando a operação termina
+        )
+      )
     )
     .subscribe((res: any) => {
-      this.people = res; // Atualiza a lista com os resultados filtrados
+      this.people = res;
     });
   }
 

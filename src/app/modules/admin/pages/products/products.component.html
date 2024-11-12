@@ -2,25 +2,120 @@
 
 <div class="app-container">
   <ul class="app-list">
-    <li *ngFor="let product of products">
-      <div class="title">
-        <h3>{{ product?.shop?.name }}</h3>
-        <p>{{ product?.shop?.description || 'Sem descrição' }}</p>
-      </div>
+    <ng-container *ngIf="skeletonOn; else content">
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
 
-      <div class="description-values">
-        <span *ngIf="getAmount(product) === 0">{{ product?.shop?.active_minimum_sales_quantity ? 'Venda por quantidade: ' : ''}}
-          <b>{{product?.shop?.active_minimum_sales_quantity ? product?.shop?.minimum_sales_quantity : ''}}</b>
-        </span>
-        <span>Valor: <b>{{ product?.shop?.sale_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
-        <span *ngIf="getAmount(product) > 0">Valor total: <b>{{getAmount(product) * product?.shop?.sale_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
-      </div>
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
 
-      <div class="insert-remove-item">
-        <button class="remove-button" mat-icon-button (click)="removeProduct(product)"><mat-icon>remove</mat-icon></button>
-        <input class="transparent-input t-al-center" [value]="getAmount(product)" (change)="changeAmount(product, $event)" type="number"/>
-        <button class="insert-button" mat-icon-button (click)="addProduct(product)"><mat-icon>add</mat-icon></button>
-      </div>
-    </li>
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values">
+          <span class="skeleton-line" style="width: 40%;"></span>
+          <span class="skeleton-line" style="width: 30%;"></span>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+    </ng-container>
+
+    <ng-template #content>
+      <ng-container *ngIf="products.length === 0; else productList">
+        <div class="empty-state">
+          <div class="empty-icon"></div>
+          <img src="assets/Emptystate-Product.png" alt="Nenhuma venda encontrada" />
+          <p>Você não adicionou nenhum produto</p>
+        </div>
+      </ng-container>
+
+      <ng-template #productList>
+        <li *ngFor="let product of products">
+          <div class="title">
+            <h3>{{ product?.shop?.name }}</h3>
+            <p>{{ product?.shop?.description || 'Sem descrição' }}</p>
+          </div>
+
+          <div class="description-values">
+            <span *ngIf="getAmount(product) === 0">{{ product?.shop?.active_minimum_sales_quantity ? 'Venda por quantidade: ' : ''}}
+              <b>{{product?.shop?.active_minimum_sales_quantity ? product?.shop?.minimum_sales_quantity : ''}}</b>
+            </span>
+            <span>Valor: <b>{{ product?.shop?.sale_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+            <span *ngIf="getAmount(product) > 0">Valor total: <b>{{getAmount(product) * product?.shop?.sale_value | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</b></span>
+          </div>
+
+          <div class="insert-remove-item">
+            <button class="remove-button" mat-icon-button (click)="removeProduct(product)"><mat-icon>remove</mat-icon></button>
+            <input class="transparent-input t-al-center" [value]="getAmount(product)" (change)="changeAmount(product, $event)" type="number"/>
+            <button class="insert-button" mat-icon-button (click)="addProduct(product)"><mat-icon>add</mat-icon></button>
+          </div>
+        </li>
+      </ng-template>
+    </ng-template>
   </ul>
 </div>

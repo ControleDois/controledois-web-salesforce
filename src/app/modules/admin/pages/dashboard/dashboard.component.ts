@@ -7,6 +7,7 @@ import { NgxCurrencyDirective } from 'ngx-currency';
 import { NgxMaskPipe } from 'ngx-mask';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { StorageService } from '../../../../shared/services/storage.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,7 +30,8 @@ export class DashboardComponent {
   public skeletonOn: boolean = true;
 
   constructor(
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private storageService: StorageService
   ) {
     Chart.register(CategoryScale, BarController, BarElement, PointElement, LinearScale, Title, Legend, Tooltip);
   }
@@ -39,16 +41,26 @@ export class DashboardComponent {
   }
 
   load() {
+    this.appSalesCount = this.storageService.getList('salesCount');
+    this.skeletonOn = !this.appSalesCount;
+
     this.dashboardService.appSalesCount().pipe(
       map(res => {
         this.appSalesCount = res;
+        this.storageService.setList('salesCount', res);
         this.skeletonOn = false;
       })
     ).subscribe();
 
+    this.appSalesFlow = this.storageService.getList('salesFlow');
+    if (this.appSalesFlow?.data.length > 0) {
+      this.showCharts();
+    }
+
     this.dashboardService.appSalesFlow().pipe(
       map(res => {
         this.appSalesFlow = res;
+        this.storageService.setList('salesFlow', res);
         this.showCharts();
       })
     ).subscribe();

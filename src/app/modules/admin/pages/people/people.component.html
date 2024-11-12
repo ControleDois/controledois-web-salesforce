@@ -2,24 +2,88 @@
 
 <div class="app-container">
   <ul class="app-list">
-    <li *ngFor="let person of people" (click)="setPeople(person)">
-      <div class="title">
-        <h3>{{ person.name }}</h3>
-        <p>{{ person.fantasy_name || '' }}</p>
-      </div>
-      <div class="description-values" style="border: none; padding-bottom: 0;">
-        <span>CNPJ: <b>{{ person.document | mask: person.people_type == 0 ? '000.000.000-00' : '00.000.000/0000-00'}}</b></span>
-      </div>
-      <div *ngIf="person?.address?.city" class="description-values" style="border: none; padding: 0; ">
-        <span>Cidade: <b>{{person?.address?.city}}</b></span>
-        <span>Estado: <b>{{person?.address?.state}}</b></span>
-      </div>
-      <!-- <div *ngIf="person?.address" class="description-values" style="border: none; padding-bottom: 0; ">
-        <span>Endereço: <b>{{person?.address?.address}}</b></span>
-      </div>
-      <div *ngIf="person?.address" class="description-values" style="border: none; padding: 0; ">
-        <span>Bairro: <b>{{person?.address?.district}}</b></span>
-      </div> -->
-    </li>
+    <ng-container *ngIf="skeletonOn; else content">
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+      <li class="skeleton-item" style="margin-bottom: 20px;">
+        <div class="title">
+          <h3 class="skeleton-line"></h3>
+          <p class="skeleton-line"></p>
+        </div>
+
+        <div class="description-values" style="border: none; padding-bottom: 0;">
+          <span class="skeleton-line status-active" style="width: 20%;"></span>
+          <span class="skeleton-line" style="width: 50%;"></span>
+        </div>
+      </li>
+    </ng-container>
+
+    <ng-template #content>
+      <ng-container *ngIf="people.length === 0; else peopleList">
+        <div class="empty-state">
+          <div class="empty-icon"></div>
+          <img src="assets/Emptystate-People.png" alt="Nenhuma venda encontrada" />
+          <p>Nenhum cliente encontrado. Cadastre ou tente novamente!</p>
+        </div>
+      </ng-container>
+
+      <ng-template #peopleList>
+        <li *ngFor="let person of people" (click)="setPeople(person)">
+          <div class="title">
+            <h3>{{ person.name }}</h3>
+            <p *ngIf="person?.social_name && person?.name !== person?.social_name">{{ person.social_name}}</p>
+          </div>
+          <div class="description-values" style="border: none; padding-bottom: 0;">
+            <span>CNPJ: <b>{{ person.document | mask: person.people_type == 0 ? '000.000.000-00' : '00.000.000/0000-00'}}</b></span>
+          </div>
+          <div *ngIf="person?.address?.city" class="description-values" style="border: none; padding: 0; ">
+            <span>Cidade: <b>{{person?.address?.city}}</b></span>
+            <span>Estado: <b>{{person?.address?.state}}</b></span>
+          </div>
+        </li>
+      </ng-template>
+    </ng-template>
   </ul>
 </div>

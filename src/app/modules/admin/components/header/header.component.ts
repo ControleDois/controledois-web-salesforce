@@ -31,6 +31,14 @@ export class HeaderComponent {
   }
 
   getFisrtName(): string {
-    return this.storageService.getAuth().user.people.name.split(' ')[0];
+    const nameOrEmail = this.storageService.getAuth().user.people.name;
+
+    // Verifica se é um e-mail (contém '@')
+    if (nameOrEmail.includes('@')) {
+      return nameOrEmail.split('@')[0]; // Retorna a parte antes do '@'
+    }
+
+    // Caso contrário, retorna o primeiro nome
+    return nameOrEmail.split(' ')[0];
   }
 }

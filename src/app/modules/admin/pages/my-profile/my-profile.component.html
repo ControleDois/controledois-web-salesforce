@@ -125,33 +125,29 @@
 
   <ul class="company-select app-list" style="margin-top: 0;">
     <li>
-      <h4>Dados em Cash</h4>
+      <h4>Dados carregados</h4>
       <div class="details">
         <div class="details-item">
           <div class="details-item-title">
             <mat-icon>person</mat-icon>
             <span>Clientes</span>
           </div>
-          <span>{{clientCount}}</span>
+          <span [@numberAnimation]="clientCount">{{ clientCount }}</span>
         </div>
         <div class="details-item">
           <div class="details-item-title">
             <mat-icon>conveyor_belt</mat-icon>
             <span>Produtos</span>
           </div>
-          <span>{{productCount}}</span>
+          <span [@numberAnimation]="productCount">{{ productCount }}</span>
         </div>
         <div class="details-item">
           <div class="details-item-title">
             <mat-icon>store</mat-icon>
             <span>Vendas & Orçamentos</span>
           </div>
-          <span>{{salesCount}}</span>
+          <span [@numberAnimation]="salesCount">{{ salesCount }}</span>
         </div>
-      </div>
-
-      <div class="edit-user" style="width: 100%">
-        <button mat-button class="button-blue-border-white" style="width: 100%;" (click)="updateCache()"><mat-icon>update</mat-icon> Atualizar Dados</button>
       </div>
     </li>
   </ul>
