@@ -161,6 +161,13 @@ export class AdminComponent implements OnInit {
           return existingPerson ? { ...existingPerson, ...person } : person;
         });
 
+        //Verifica os clientes que não foram atualizados e deleta
+        existingData.forEach((person: any) => {
+          if (!updatedData.find((p: any) => p.id === person.id)) {
+            this.indexedDbService.deleteData(person.id, 'people');
+          }
+        });
+
         this.indexedDbService.batchInsert(updatedData, 'people', updatedData.length);
       });
 
@@ -200,6 +207,13 @@ export class AdminComponent implements OnInit {
         const updatedData = res.data.map((product: any) => {
           const existingProduct = existingData.find((p: any) => p.id === product.id);
           return existingProduct ? { ...existingProduct, ...product } : product;
+        });
+
+        //Verifica os produtos que não foram atualizados e deleta
+        existingData.forEach((product: any) => {
+          if (!updatedData.find((p: any) => p.id === product.id)) {
+            this.indexedDbService.deleteData(product.id, 'products');
+          }
         });
 
         this.indexedDbService.batchInsert(updatedData, 'products', updatedData.length);
