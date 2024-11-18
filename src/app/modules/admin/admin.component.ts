@@ -238,7 +238,12 @@ export class AdminComponent implements OnInit {
         const newData = res.data.filter((sale: any) => !existingIds.has(sale.id));
         const updatedData = res.data.map((sale: any) => {
           const existingSale = existingData.find((p: any) => p.id === sale.id);
-          return existingSale ? { ...existingSale, ...sale } : sale;
+
+          if (existingSale?.isOff) {
+            return existingSale;
+          } else {
+            return existingSale ? { ...existingSale, ...sale } : sale;
+          }
         });
 
         this.indexedDbService.batchInsert(updatedData, 'sales', updatedData.length);
