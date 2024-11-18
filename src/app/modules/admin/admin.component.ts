@@ -161,12 +161,12 @@ export class AdminComponent implements OnInit {
           return existingPerson ? { ...existingPerson, ...person } : person;
         });
 
-        //Verifica os clientes que não foram atualizados e deleta
-        existingData.forEach((person: any) => {
-          if (!updatedData.find((p: any) => p.id === person.id)) {
-            this.indexedDbService.deleteData(person.id, 'people');
-          }
-        });
+        // //Verifica os clientes que não foram atualizados e deleta
+        // existingData.forEach((person: any) => {
+        //   if (!updatedData.find((p: any) => p.id === person.id)) {
+        //     this.indexedDbService.deleteData(person.id, 'people');
+        //   }
+        // });
 
         this.indexedDbService.batchInsert(updatedData, 'people', updatedData.length);
       });
@@ -210,11 +210,11 @@ export class AdminComponent implements OnInit {
         });
 
         //Verifica os produtos que não foram atualizados e deleta
-        existingData.forEach((product: any) => {
-          if (!updatedData.find((p: any) => p.id === product.id)) {
-            this.indexedDbService.deleteData(product.id, 'products');
-          }
-        });
+        // existingData.forEach((product: any) => {
+        //   if (!updatedData.find((p: any) => p.id === product.id)) {
+        //     this.indexedDbService.deleteData(product.id, 'products');
+        //   }
+        // });
 
         this.indexedDbService.batchInsert(updatedData, 'products', updatedData.length);
       });
