@@ -156,7 +156,7 @@ export class AdminComponent implements OnInit {
         const existingIds = new Set(existingData.map((person: any) => person.id));
 
         const newData = res.data.filter((person: any) => !existingIds.has(person.id));
-        const updatedData = res.data.map((person: any) => {
+        const updatedData = newData.map((person: any) => {
           const existingPerson = existingData.find((p: any) => p.id === person.id);
           return existingPerson ? { ...existingPerson, ...person } : person;
         });
@@ -204,7 +204,7 @@ export class AdminComponent implements OnInit {
         const existingIds = new Set(existingData.map((product: any) => product.id));
 
         const newData = res.data.filter((product: any) => !existingIds.has(product.id));
-        const updatedData = res.data.map((product: any) => {
+        const updatedData = newData.map((product: any) => {
           const existingProduct = existingData.find((p: any) => p.id === product.id);
           return existingProduct ? { ...existingProduct, ...product } : product;
         });
@@ -250,7 +250,7 @@ export class AdminComponent implements OnInit {
         const existingIds = new Set(existingData.map((sale: any) => sale.id));
 
         const newData = res.data.filter((sale: any) => !existingIds.has(sale.id));
-        const updatedData = res.data.map((sale: any) => {
+        const updatedData = newData.map((sale: any) => {
           const existingSale = existingData.find((p: any) => p.id === sale.id);
 
           if (existingSale?.isOff) {
