@@ -227,6 +227,7 @@ export class SaleComponent implements OnInit {
             this.indexedDbService.addData(sale, 'sales');
             this.loadingFull.active = false;
             this.saleSelected = {};
+            this.showDialogSync = false;
           })
         )
         .subscribe();

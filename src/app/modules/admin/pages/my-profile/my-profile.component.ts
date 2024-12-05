@@ -105,4 +105,16 @@ export class MyProfileComponent implements OnInit {
     this.indexedDbService.clearData('sales');
     this.router.navigate(['/auth/slide']);
   }
+
+  getFisrtName(): string {
+    const nameOrEmail = this.storageService.getAuth().user.people.name;
+
+    // Verifica se é um e-mail (contém '@')
+    if (nameOrEmail.includes('@')) {
+      return nameOrEmail.split('@')[0]; // Retorna a parte antes do '@'
+    }
+
+    // Caso contrário, retorna o primeiro nome
+    return nameOrEmail.split(' ')[0] + ' ' + nameOrEmail.split(' ')[1];
+  }
 }

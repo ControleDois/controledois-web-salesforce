@@ -47,6 +47,10 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentPagePeople = this.storageService.getList('currentPagePeople') || 1;
+    this.currentPageProduct = this.storageService.getList('currentPageProduct') || 1;
+    this.currentPageSale = this.storageService.getList('currentPageSale') || 1;
+
     // Verifica se a tabela está vazia ao carregar a página
     this.indexedDbService.getAllData('people').then((data: any[]) => {
       if (!data || data.length === 0) {
@@ -56,7 +60,7 @@ export class AdminComponent implements OnInit {
     });
 
     //Atualiza vendas
-    interval(60000)
+    interval(30000)
       .pipe(
         switchMap(() => this.internetService.hasGoodConnection()),
         filter((isGoodConnection) => isGoodConnection)
@@ -134,6 +138,7 @@ export class AdminComponent implements OnInit {
     if (!this.hasMorePagesPeople) {
       // Reinicia a busca desde o início se não houver mais páginas
       this.currentPagePeople = 1;
+      this.storageService.setList('currentPagePeople', this.currentPagePeople);
       this.hasMorePagesPeople = true;
     }
 
@@ -174,6 +179,9 @@ export class AdminComponent implements OnInit {
       // Avança para a próxima página
       this.currentPagePeople++;
 
+      // Salva a página atual
+      this.storageService.setList('currentPagePeople', this.currentPagePeople);
+
       // Busca produtos
       this.updateProduct();
     });
@@ -183,6 +191,7 @@ export class AdminComponent implements OnInit {
     if (!this.hasMorePagesProduct) {
       // Reinicia a busca desde o início se não houver mais páginas
       this.currentPageProduct = 1;
+      this.storageService.setList('currentPageProduct', this.currentPageProduct);
       this.hasMorePagesProduct = true;
     }
 
@@ -222,6 +231,9 @@ export class AdminComponent implements OnInit {
       // Avança para a próxima página
       this.currentPageProduct++;
 
+      // Salva a página atual
+      this.storageService.setList('currentPageProduct', this.currentPageProduct);
+
       //Busca vendas
       this.updateSales();
     });
@@ -231,6 +243,7 @@ export class AdminComponent implements OnInit {
     if (!this.hasMorePagesSale) {
       // Reinicia a busca desde o início se não houver mais páginas
       this.currentPageSale = 1;
+      this.storageService.setList('currentPageSale', this.currentPageSale);
       this.hasMorePagesSale = true;
     }
 
@@ -265,6 +278,9 @@ export class AdminComponent implements OnInit {
 
       // Avança para a próxima página
       this.currentPageSale++;
+
+      // Salva a página atual
+      this.storageService.setList('currentPageSale', this.currentPageSale);
     });
   }
 }

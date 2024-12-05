@@ -118,7 +118,7 @@
             </span>
             <span class="actions" [matMenuTriggerFor]="menu">Opções</span>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="editSale(sale)" *ngIf="sale.status !== 3 && sale.status !== 4"><mat-icon>edit</mat-icon>Editar</button>
+              <button mat-menu-item (click)="editSale(sale)" *ngIf="sale.status !== 3 && sale.status !== 4 && sale?.id.length === 36"><mat-icon>edit</mat-icon>Editar</button>
               <button mat-menu-item routerLink="../sale-report-view/{{sale.id}}"><mat-icon>print</mat-icon>Imprimir</button>
               <button mat-menu-item (click)="showDialogSync = true; saleSelected = sale" *ngIf="sale.isOff" style="border-top: 1px solid #ddd;"><mat-icon>bolt</mat-icon>Sincronizar</button>
             </mat-menu>

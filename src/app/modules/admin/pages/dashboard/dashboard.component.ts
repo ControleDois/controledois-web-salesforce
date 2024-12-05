@@ -25,6 +25,8 @@ import { StorageService } from '../../../../shared/services/storage.service';
 export class DashboardComponent {
   @ViewChild("meuCanvas", { static: true }) elemento: ElementRef | any;
 
+  private appChart: any;
+
   public appSalesFlow: any;
   public appSalesCount: any;
   public skeletonOn: boolean = true;
@@ -83,7 +85,11 @@ export class DashboardComponent {
 
 
   showCharts() {
-    new Chart(this.elemento.nativeElement, {
+    if (this.appChart) {
+      this.appChart.destroy();
+    }
+
+    this.appChart = new Chart(this.elemento.nativeElement, {
       type: 'bar',
       data: {
         labels: this.appSalesFlow?.months.slice().reverse().map((item: any) => item),
