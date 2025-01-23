@@ -96,4 +96,19 @@
   </div>
 </div>
 
+<div class="overlay" *ngIf="showDialogSync" (click)="showDialogSync = false"></div>
+<div class="dialog" *ngIf="showDialogSync">
+  <h3>Remover do Carrinho</h3>
+  <ul class="sale-details">
+    <li>
+      <span style="opacity: 0.4;">Produto</span>
+      <span>{{productSelected?.shop?.name}}</span>
+    </li>
+  </ul>
+  <div class="dialog-actions">
+    <button mat-button class="button-blue-border-white" style="width: 40%;" (click)="showDialogSync = false">Cancelar</button>
+    <button mat-button class="button-green-border-white" style="width: 40%;" (click)="deleteProduct()">Confirmar</button>
+  </div>
+</div>
+
 <app-loading-full [loadingFull]="loadingFull"></app-loading-full>

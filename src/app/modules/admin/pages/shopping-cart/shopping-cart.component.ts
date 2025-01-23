@@ -62,6 +62,9 @@ export class ShoppingCartComponent {
     { name: '⦿ Venda', type: 3 },
   ];
 
+  public showDialogSync: boolean = false;
+  public productSelected: any = {};
+
   constructor(
     private storageService: StorageService,
     private dialogMessageService: DialogMessageService,
@@ -125,9 +128,19 @@ export class ShoppingCartComponent {
       productCart.subtotal = productCart.amount * productCart.cost_value || 0;
 
       if (productCart.amount <= 0) {
-        this.ShoppingCart.products = this.ShoppingCart.products.filter(x => x.product_id !== product.product_id);
+        productCart.amount += product?.shop?.minimum_sales_quantity || 1;
+        this.productSelected = product;
+        this.showDialogSync = true;
       }
     }
+
+    this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
+    this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
+  }
+
+  deleteProduct(): void {
+    this.showDialogSync = false;
+    this.ShoppingCart.products = this.ShoppingCart.products.filter(x => x.product_id !== this.productSelected.product_id);
 
     this.storageService.setList('SalesForce/ShoppingCart', this.ShoppingCart);
     this.ShoppingCart = this.storageService.getList('SalesForce/ShoppingCart');
@@ -136,7 +149,7 @@ export class ShoppingCartComponent {
   changeAmount(product: any, event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const amount = Number(inputElement.value);
-    const productCart = this.ShoppingCart?.products.find(x => x.product_id === product.id);
+    const productCart = this.ShoppingCart?.products.find(x => x.product_id === product.product_id);
 
     if (productCart) {
       if (amount % (product?.shop?.minimum_sales_quantity || 1) === 0) {
