@@ -243,4 +243,23 @@ export class SaleComponent implements OnInit {
       }
     });
   }
+
+  saleEdit(sale: any): boolean {
+    console.log(sale.status)
+    if (sale.isOff) {
+      return false
+    }else
+    if (sale.status === '3' || sale.status === 3) {
+      return false
+    } else
+    if (sale.status === 4 || sale.status === '4') {
+      return false
+    }else
+    if (sale?.id.length !== 36) {
+      return false
+    }else
+    {
+      return true
+    }
+  }
 }

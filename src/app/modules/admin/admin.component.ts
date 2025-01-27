@@ -60,12 +60,12 @@ export class AdminComponent implements OnInit {
     });
 
     //Atualiza vendas
-    interval(30000)
-      .pipe(
-        switchMap(() => this.internetService.hasGoodConnection()),
-        filter((isGoodConnection) => isGoodConnection)
-      )
-      .subscribe(() => this.syncSalesOff());
+    // interval(30000)
+    //   .pipe(
+    //     switchMap(() => this.internetService.hasGoodConnection()),
+    //     filter((isGoodConnection) => isGoodConnection)
+    //   )
+    //   .subscribe(() => this.syncSalesOff());
 
     //Atualiza dados
     interval(10000)
