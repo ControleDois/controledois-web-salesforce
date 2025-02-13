@@ -25,8 +25,12 @@
 
   <section class="people">
     <div class="namePhone">
-      <p>{{sale?.people?.name}}</p>
+      <p>FANTASIA: {{sale?.people?.name}}</p>
       <p>{{sale?.people?.phone_commercial ? (sale?.people?.phone_commercial | mask: sale?.people?.phone_commercial.length > 10 ? '(00) 00000-0000' : '(00) 0000-0000') : ''}}</p>
+    </div>
+
+    <div class="namePhone" *ngIf="sale?.people?.social_name">
+      <p>RAZÃO SOCIAL: {{sale?.people?.social_name}}</p>
     </div>
 
     <div class="documentEmail">

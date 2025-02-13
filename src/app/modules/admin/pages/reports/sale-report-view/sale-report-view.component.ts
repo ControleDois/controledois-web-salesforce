@@ -94,10 +94,12 @@ export class SaleReportViewComponent implements OnInit {
 
     let DATA: any = document.getElementById('order-report');
 
+    const namePdf = this.sale.people.social_name || this.sale.people.name;
+
     // Configurações do PDF
     const pdfOptions = {
       margin: 0,
-      filename: this.sale.people.name+'.pdf',
+      filename: namePdf +'.pdf',
       image: { type: 'jpeg', quality: 1 }, // Alterado para JPEG
       html2canvas: {
         scale: 2,
