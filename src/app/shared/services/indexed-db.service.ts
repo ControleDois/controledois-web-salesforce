@@ -150,20 +150,24 @@ export class IndexedDbService {
 
     // Calcular o primeiro e o último dia do mês da data de início
     const firstDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-    const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0); // 0 retorna o último dia do mês anterior
+    const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 23, 59, 59);
 
-    // Filtrar os dados pelos campos name, document, social_name, city e state
+    // Filtrar os dados pelos campos name, document, social_name
     const filteredSales = allSales.filter(sale => {
-      //const codeMatch = sale.code?.includes(searchText.toLowerCase());
       const nameMatch = sale.people?.name?.toLowerCase().includes(searchText.toLowerCase());
       const documentMatch = sale.people?.document?.toLowerCase().includes(searchText.toLowerCase());
       const socialNameMatch = sale.people?.social_name?.toLowerCase().includes(searchText.toLowerCase());
 
-      // Filtrar por intervalo de datas
+      // Converter a data de venda corretamente
       const dateSale = new Date(sale.date_sale);
+      if (isNaN(dateSale.getTime())) {
+        console.warn('Data inválida encontrada:', sale.date_sale);
+        return false; // Ignora datas inválidas
+      }
+
       const dateInRange = dateSale >= firstDayOfMonth && dateSale <= lastDayOfMonth;
 
-      return ( nameMatch || documentMatch || socialNameMatch) && dateInRange;
+      return (nameMatch || documentMatch || socialNameMatch) && dateInRange;
     });
 
     return filteredSales;

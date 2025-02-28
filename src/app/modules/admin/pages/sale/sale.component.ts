@@ -95,7 +95,13 @@ export class SaleComponent implements OnInit {
   load(): void {
     this.skeletonOn = true;
     this.indexedDbService.filterSaleByText('', this.vDateFilter).then((res: any) => {
-      this.sales = res.sort((a: any, b: any) => new Date(b.date_sale).getTime() - new Date(a.date_sale).getTime());
+      this.sales = res
+        .map((sale: any) => ({
+          ...sale,
+          date_sale: new Date(sale.date_sale), // Garante que a data é um objeto Date
+        }))
+        .sort((a: any, b: any) => b.date_sale.getTime() - a.date_sale.getTime());
+
       this.skeletonOn = false;
     });
   }
@@ -245,7 +251,6 @@ export class SaleComponent implements OnInit {
   }
 
   saleEdit(sale: any): boolean {
-    console.log(sale.status)
     if (sale.isOff) {
       return false
     }else
